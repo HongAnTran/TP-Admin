@@ -2,7 +2,7 @@ import InputController from "@/components/InputControl";
 import SelectController from "@/components/SelectControl";
 import SpecificationsProductsServicesAPI from "@/services/SpecificationsProductsServicesAPI";
 import { ProductSpecificationsCreateInput } from "@/types/productSpecifications";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 
@@ -21,7 +21,11 @@ function FormAddSpe() {
 
   if (!isSuccess) return <></>
 
-  return <form
+  return (
+
+    <>
+    <Typography >Thêm thông số</Typography>
+     <form
     onSubmit={handleSubmit(onSubmit)}
 
   >
@@ -61,6 +65,10 @@ function FormAddSpe() {
     <Button type="submit">Lưu</Button>
 
   </form>
+    </>
+  )
+  
+ 
 }
 
 export default FormAddSpe

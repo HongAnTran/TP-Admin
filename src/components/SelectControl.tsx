@@ -48,7 +48,7 @@ function SelectController<
   const { field, fieldState } = useController({ name, control });
   const [open, setOpen] = useState(false);
 
-  console.log(field.value)
+
 
   function handlerChange(value: ValueOptionType) {
     console.log(value,mutiple)
@@ -109,7 +109,7 @@ function SelectController<
                                 className=" border border-primary px-2 h-full rounded "
                               >
                                 <Typography
-                                  className=" text-primary"
+                                    variant="body2"
                                 >
                                   {
                                     options.find((op) => op.value === item)?.label

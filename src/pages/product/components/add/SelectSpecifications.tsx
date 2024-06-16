@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import SpecificationsProductsServicesAPI from '@/services/SpecificationsProductsServicesAPI';
-import { Button, Dialog, DialogContent } from '@mui/material';
+import { Box, Button, Chip, Dialog, DialogContent } from '@mui/material';
 import FormAddSpe from './FormAddSpe';
 
 const ITEM_HEIGHT = 48;
@@ -28,7 +28,9 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
     const {
       target: { value },
     } = event;
+    console.log(value)
     if (typeof value === "string") return
+
     onChange(value.map(va => Number(va)));
   };
 
@@ -45,16 +47,23 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
             multiple
             value={value.map(item => item.toString())}
             onChange={handleChange}
+            
             input={<OutlinedInput label="Thông số kĩ thuật" />}
             MenuProps={MenuProps}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
           >
             {specifications.map((spe) => (
               <MenuItem
                 key={spe.id}
-                value={spe.id}
-
+                value={spe.id.toString()}
               >
-                {spe.name}
+                {spe.name} - {spe.value}
               </MenuItem>
             ))}
           </Select>
