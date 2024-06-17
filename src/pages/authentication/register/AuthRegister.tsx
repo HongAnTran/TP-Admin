@@ -22,26 +22,26 @@ import {
 import * as Yup from "yup";
 import { Formik } from "formik";
 
-import AnimateButton from "ui-component/extended/AnimateButton";
+import AnimateButton from "@/ui-component/extended/AnimateButton";
 
 import {
   strengthColor,
   strengthIndicator,
-} from "utils/password-strength";
+} from "@/utils/password-strength";
 
 // firebase
 import { createUserWithEmailAndPassword  ,updateProfile} from "firebase/auth";
-import { auth } from "firebaseConfig";
+import { auth } from "@/firebaseConfig";
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { RootState } from "redux/store";
-import Google from 'assets/images/icons/social-google.svg';
+import { RootState } from "@/redux/store";
+import Google from '@/assets/images/icons/social-google.svg';
 
 // controler
-import {  setDocController } from "controllers/common";
-import { Wallet } from "types/main";
-import { registerWithGoogleFirebase } from "controllers/authen";
+import {  setDocController } from "@/controllers/common";
+import { Wallet } from "@/types/main";
+import { registerWithGoogleFirebase } from "@/controllers/authen";
 
 // ===========================|| FIREBASE - REGISTER ||=========================== //
 
