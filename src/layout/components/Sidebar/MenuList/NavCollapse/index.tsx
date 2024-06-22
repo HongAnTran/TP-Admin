@@ -49,9 +49,10 @@ const NavCollapse = ({ menu, level }: { menu :MenuItemChildren ; level : number 
         }
     });
 
-    const Icon : any = menu.icon;
     const menuIcon = menu.icon ? (
-        <Icon strokeWidth={1.5} size="1.3rem" style={{ marginTop: 'auto', marginBottom: 'auto' }} />
+       <>
+       {menu.icon}
+       </>
     ) : (
         <FiberManualRecordIcon
             sx={{

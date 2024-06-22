@@ -30,9 +30,11 @@ const NavItem = ({ item, level }: { item:  MenuItemChildren; level: number }) =>
 
   const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const Icon : any  = item.icon;
+
   const itemIcon = item?.icon ? (
-    <Icon stroke={1.5} size="1.3rem" />
+    <>
+    
+    {item.icon}</>
   ) : (
     <FiberManualRecordIcon
       sx={{
