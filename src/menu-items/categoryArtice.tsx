@@ -10,7 +10,7 @@ const categoryArtice :MenuItemChildren = {
         title: 'Danh mục bài viết',
         type: 'item',
         url: '/categoryArtice',
-        icon: Inventory2Icon,
+        icon: <Inventory2Icon />,
         breadcrumbs: true,    
     
 };

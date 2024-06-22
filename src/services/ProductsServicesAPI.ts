@@ -48,7 +48,7 @@ export default {
             const body = data.data
           return serviceAPI.put(data.id, body)
         },
-        onSuccess: (data) =>
+        onSuccess: () =>
           queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
       }
 

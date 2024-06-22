@@ -4,7 +4,7 @@ export type SpecificationsTypeCreateInput = {
 }
 export type ProductSpecificationsCreateInput = {
   name: string
-  value: string
+  value: string[]
   description?: string | null
   type: {
     connect: { id: number }

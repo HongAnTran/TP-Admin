@@ -1,4 +1,4 @@
-import { TablerIcon } from '@tabler/icons';
+
 import { ChipProps } from '@mui/material';
 
 export interface MenuItemChildren{
@@ -6,7 +6,7 @@ export interface MenuItemChildren{
     title: string;
     type: 'item' | 'collapse' ;
     url?: string;
-    icon?: TablerIcon ;
+    icon?: React.ReactNode ;
     breadcrumbs?: boolean;
     external?: boolean;
     target?: boolean;

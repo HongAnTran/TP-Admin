@@ -1,7 +1,10 @@
 import { useFieldArray, useForm, FormProvider } from 'react-hook-form';
 import ValuesArray from './ValuesArray';
-import { Button, Input } from '@mui/material';
+import { Button, MenuItem, Select } from '@mui/material';
 import { ProductOption } from '@/types/product';
+import { optionsValue } from '@/constans/options';
+
+
 
 export default function OptionsForm(
   { onSubmit, defaultValue }:
@@ -12,7 +15,9 @@ export default function OptionsForm(
       options: defaultValue || []
     }
   })
-  const { control, register, handleSubmit } = methods;
+
+  console.log(defaultValue)
+  const { control, register, handleSubmit, watch } = methods;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'options',
@@ -24,11 +29,14 @@ export default function OptionsForm(
       <form onSubmit={handleSubmit(data => onSubmit(data.options))}>
         <ul className=' flex flex-col gap-2 mb-2'>
           {fields.map((item, index) => (
-            <li key={item.id} className=' flex gap-2'>
-              <Input {...register(`options.${index}.name`)} placeholder="Name" className="input input-bordered w-full max-w-xs" />
+            <li key={item.id} className=' flex gap-2 items-start justify-between'>
+              <Select   {...register(`options.${index}.name`)} placeholder="Name" className="input input-bordered w-full max-w-xs" >
+                {optionsValue.map(op => {
+                  return (<MenuItem key={op} value={op}>{op}</MenuItem>)
+                })}
+              </Select>
 
-              <ValuesArray nestIndex={index} />
-
+              <ValuesArray nestIndex={index} name={watch("options")?.[index]?.name} />
               <Button type="button" onClick={() => remove(index)}>Xóa</Button>
             </li>
           ))}

@@ -10,7 +10,7 @@ const product: MenuItemChildren = {
         id: 'product-group',
         title: 'Sản phẩm',
         type: "collapse",
-        icon: Inventory2Icon,
+        icon: <Inventory2Icon />,
         breadcrumbs: true,
         children: [
                 {
@@ -18,7 +18,7 @@ const product: MenuItemChildren = {
                         title: 'Tất cả sản phẩm',
                         type: "item",
                         url: '/product',
-                        icon: Inventory2Icon,
+                        icon: <Inventory2Icon />,
                         breadcrumbs: true,
                 },
                 {
@@ -26,7 +26,7 @@ const product: MenuItemChildren = {
                         title: 'Danh mục sản phẩm',
                         type: "item",
                         url: '/category',
-                        icon: CategoryIcon,
+                        icon: <CategoryIcon />,
                         breadcrumbs: true,
                 },
         ]

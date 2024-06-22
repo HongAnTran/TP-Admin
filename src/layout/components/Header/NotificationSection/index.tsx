@@ -30,7 +30,7 @@ import Transitions from '../../../../ui-component/extended/Transitions';
 import NotificationList from './NotificationList';
 
 // assets
-import { IconBell } from '@tabler/icons';
+// import { IconBell } from '@tabler/icons';
 
 // notification status options
 const status = [
@@ -119,7 +119,7 @@ const NotificationSection = () => {
                         onClick={handleToggle}
                         color="inherit"
                     >
-                        <IconBell stroke={1.5} size="1.3rem" />
+                        {/* <BellIco stroke={1.5} size="1.3rem" /> */}
                     </Avatar>
                 </ButtonBase>
             </Box>

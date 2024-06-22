@@ -47,7 +47,7 @@ interface Product {
 interface ProductVariant {
   barcode: null | string,
   compare_at_price: number,
-  id?: number,
+  id: number,
   option1: string,
   option2: string,
   option3: string,
@@ -60,7 +60,20 @@ interface ProductVariant {
   // image_id: number,
   available: boolean,
 }
-
+interface ProductVariantCreateInput {
+  barcode?:string,
+  compare_at_price: number,
+  option1: string,
+  option2: string,
+  option3: string,
+  position: number,
+  price: number,
+  sku: string,
+  title: string,
+  updated_at?:string,
+  inventory_quantity: number,
+  available: boolean,
+}
 
 // interface ProductImage {
 //   created_at: null | string,
@@ -89,7 +102,7 @@ interface ProductSpecifications {
   id: number
   type_id: number
   name: string
-  value: string
+  value: string[]
   description?: string
 }
 interface ProductTypeSpecifications {
@@ -193,11 +206,8 @@ type ProductUpdateInput = {
   price_max?: number
   price_min?: number
   images?: string[]
-  category?: {
-    update: { id: number }
-  }
-  specifications?: {
-    connect: { id: number }[]
-  }
+  category_id?: number
 }
-export type { Product, Products, ProductUpdateInput,ProductCreateInput, ProductsParams, ProductOption, ProductOrder, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+
+type ProductVariantUpdateInput = Omit<Partial<ProductVariant>, "id">
+export type { Product, ProductVariantCreateInput, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductOrder, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

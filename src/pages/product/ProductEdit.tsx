@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { Product, ProductCreateInput, ProductOption, ProductUpdateInput, ProductVariant } from '@/types/product';
+import { Product, ProductCreateInput, ProductOption, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
-import { Button, Grid, Input, Typography } from '@mui/material'
+import { Button, Chip, Dialog, DialogContent, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/Editor';
@@ -10,7 +10,9 @@ import SelectCategory from './components/add/SelectCategory';
 import SelectSpecifications from './components/add/SelectSpecifications';
 import OptionsForm from './components/add/OptionsForm';
 import { useParams } from 'react-router-dom';
-import { createSlug } from '@/utils/addProduct';
+import { createSlug, fillArray, fillArrayToLength } from '@/utils/addProduct';
+import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
+import { toast } from 'react-toastify';
 
 
 
@@ -30,20 +32,17 @@ export default function ProductEdit() {
 function ProductEditForm({ product }: { product: Product }) {
 
   const { mutateAsync } = ProductsServicesAPI.useUpdate()
-
-
-  const [options, setOptions] = useState<ProductOption[]>(product.options)
+  // const [options, setOptions] = useState<ProductOption[]>(product.options)
   const [variants, setVariants] = useState<ProductVariant[]>(product.variants)
-  const [images, setImages] = useState<string[]>(product.images)
+  const [images, setImages] = useState<string[]>(fillArrayToLength(product.images, 4, ""))
 
-  const { handleSubmit, control, reset, setValue, watch } = useForm<ProductUpdateInput>({
+  const [variantEdit, setVariantEdit] = useState<ProductVariant>(product.variants[0])
+  const [openEdit, setOpenEdit] = useState(false)
+
+  const { handleSubmit, control, setValue, watch } = useForm<ProductUpdateInput>({
     mode: "onSubmit",
     defaultValues: {
-      specifications: {
-        connect: product.specifications.map(spe => ({ id: spe.id }))
-      },
       title: product.title,
-      category: { update: { id: product.category_id } },
       vendor: product.vendor,
       barcode: product.barcode,
       description_html: product.description_html,
@@ -51,45 +50,29 @@ function ProductEditForm({ product }: { product: Product }) {
       short_description: product.short_description,
       meta_description: product.meta_description,
       meta_title: product.meta_title,
-
+      category_id: product.category_id,
+      images: product.images
     }
   });
 
+
+
   async function onSubmit(data: ProductUpdateInput) {
     try {
-
-      // let price = data.price
-      // let price_min = data.price_min
-      // let price_max = data.price_max
-
-      // const variantsSort = variants.sort((a, b) => a.price - b.price)
-      // const variantPricemin = variantsSort[0]
-      // price = variantPricemin.price
-      // if (variants.length > 1) {
-      //   const variantPriceMax = variantsSort[0]
-      //   price_max = variantPriceMax.price
-      //   price_min = variantPricemin.price
-      // }
       await mutateAsync({
-        id : product.id,
-        data : {
+        id: product.id,
+        data: {
           ...data,
           slug: createSlug(data.title),
-          // price,
-          // price_max,
-          // price_min,
-          status: 1,
           images: images.filter(img => img),
         }
       })
-      resetValue()
-    } catch (error) { /* empty */ }
-  }
-  function resetValue() {
-    reset()
-    setVariants([])
-    setOptions([])
-    setImages(["", "", "", ""])
+      toast.success("Cập nhập thành công")
+
+    } catch (error) {
+      toast.error("Cập nhập thất bại")
+
+    }
   }
 
   const handlePriceChange = (id: string, price: number) => {
@@ -113,14 +96,19 @@ function ProductEditForm({ product }: { product: Product }) {
   };
 
 
+  function onEditVariant(variant: ProductVariant) {
+    setVariantEdit(variant)
+    setOpenEdit(true)
+  }
+
 
   return (
-    <div className=' py-2'>
+    <div className=' py-2 '>
       <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Chỉnh sửa sản phẩm {product.title}</Typography>
+        <Typography variant="h1">Sửa {product.title}</Typography>
 
       </div>
-      <Grid container gap={3} wrap="nowrap">
+      <Grid container gap={3} wrap="nowrap" className=' relative'>
         <Grid sm={9}>
           <div className=' flex flex-col gap-2'>
 
@@ -131,7 +119,9 @@ function ProductEditForm({ product }: { product: Product }) {
               >
                 <div className=' flex gap-2'>
                   <InputController
-
+                    rules={{
+                      required: "Nhập tên sản phẩm"
+                    }}
                     label="Tên sản phẩm"
                     control={control}
                     name="title"
@@ -161,17 +151,6 @@ function ProductEditForm({ product }: { product: Product }) {
                   />
                   <InputController
 
-                    label="Ảnh đại diện"
-                    control={control}
-                    name="featured_image"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-                </div>
-                <div className=' flex gap-2'>
-                  <InputController
-
                     label="Mô tả ngắn"
                     control={control}
                     name="short_description"
@@ -179,9 +158,8 @@ function ProductEditForm({ product }: { product: Product }) {
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-
-
                 </div>
+
 
                 <div>
                   <Editor
@@ -192,85 +170,215 @@ function ProductEditForm({ product }: { product: Product }) {
                 <div className=' flex gap-2'>
                   <InputController
 
-                    label="meta_description"
-                    control={control}
-                    name="meta_description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-                  <InputController
-
-                    label="meta_title"
+                    label="Tiêu đề meta"
                     control={control}
                     name="meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                </div>
+                  <InputController
 
-                <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>
+                    label="Mô tả meta"
+                    control={control}
+                    name="meta_description"
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+
+                </div>
+                <MainCard title="Hình ảnh sản phẩm">
+                  <div className=' grid grid-cols-2 gap-2'>
+                    {images.map((image, index) => (
+                      <OutlinedInput
+                        key={index}
+                        fullWidth
+                        type="text"
+                        value={image}
+                        onChange={(e) => handleInputChange(index, e.target.value)}
+                        placeholder={`Link hỉnh ảnh ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                </MainCard>
+                <Button variant="contained" type="submit">Lưu</Button>
               </form>
             </MainCard>
-            <MainCard title="Hình ảnh sản phẩm">
-              <div className=' flex flex-col gap-1'>
-                {images.map((image, index) => (
-                  <div key={index}>
-                    <Input
-                      type="text"
-                      value={image}
-                      onChange={(e) => handleInputChange(index, e.target.value)}
-                      placeholder={`Image URL ${index + 1}`}
 
-                    />
-                  </div>
-                ))}
-              </div>
-            </MainCard>
             {/* <MainCard title="Biến thể">
-              <OptionsForm onSubmit={(op) => setOptions(op)} defaultValue={product.options} />
+              <OptionsForm defaultValue={options} onSubmit={(op) => setOptions(op)} />
 
-              <ul>
-                {variants.map(variant => (
-                  <li key={variant.sku}>
-                    <span>{variant.title}</span>
-                    <Input
-                      type="number"
-                      value={variant.price}
-                      onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
-                      placeholder="Price"
-                    />
-                    <Input
-                      type="number"
-                      value={variant.compare_at_price}
-                      onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
-                      placeholder="Compare at Price"
-                    />
-                  </li>
-                ))}
-              </ul>
-
-            </MainCard>
-            <MainCard title="Thông số kỉ thuật">
-              <SelectSpecifications value={watch("specifications.connect").map(spe => spe.id)} onChange={(ids) => {
-                setValue("specifications.connect", ids.map(id => ({ id })))
-              }} />
 
 
             </MainCard> */}
+            <MainCard title="Danh sách biến thể">
+              <ul className=' mt-3 flex flex-col gap-2'>
+                {variants.map(variant => (
+                  <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
+                    <Chip color="primary" label={variant.title} />
+                    <div className=' flex items-center  gap-2'>
+                      <span>Giá</span>
+                      <Input
+                        type="number"
+                        value={variant.price}
+                        onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
+                        placeholder="Price"
+                        disabled
+                      />
+                    </div>
+                    <div className=' flex items-center  gap-2'>
+                      <span>Giá so sánh</span>
+
+                      <Input
+                        disabled
+
+                        type="number"
+                        value={variant.compare_at_price}
+                        onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
+                        placeholder="Compare at Price"
+                      />
+                    </div>
+                    <Button onClick={() => {
+                      onEditVariant(variant)
+                    }}>Sửa</Button>
+                  </li>
+                ))}
+              </ul>
+            </MainCard>
+            {/* <MainCard title="Thông số kỷ thuật">
+            <SelectSpecifications value={watch("specifications.connect").map(spe => spe.id)} onChange={(ids) => {
+              setValue("specifications.connect", ids.map(id => ({ id })))
+            }} />
+          </MainCard> */}
           </div>
 
         </Grid>
-        <Grid sm={3}>
-          <MainCard title="Danh mục">
-            <SelectCategory value={watch("category.update.id")?.toString() || ""} onChange={(id) => {
-              setValue("category.update.id", id)
+        <Grid sm={3} className=' sticky'>
+          <MainCard title="Danh mục" >
+            <SelectCategory value={watch("category_id")?.toString() || ""} onChange={(id) => {
+              setValue("category_id", id)
             }} />
           </MainCard>
         </Grid>
-
       </Grid>
+
+      <Dialog open={openEdit} onClose={() => { setOpenEdit(false) }} >
+        <DialogContent>
+          <FormEditVariant product={variantEdit} />
+        </DialogContent>
+      </Dialog>
     </div>
   )
+}
+
+
+function FormEditVariant({ product }: { product: ProductVariant }) {
+  const { mutateAsync } = ProductsVariantServicesAPI.useUpdate()
+
+
+  const { handleSubmit, control } = useForm<ProductVariantUpdateInput>({
+    mode: "onSubmit",
+    defaultValues: {
+      title: product.title,
+      barcode: product.barcode,
+      compare_at_price: product.compare_at_price,
+      inventory_quantity: product.inventory_quantity,
+      price: product.price,
+      sku: product.sku
+    }
+  });
+
+  async function onSubmit(data: ProductVariantUpdateInput) {
+    // console.log(data)
+    // return
+    try {
+      await mutateAsync({
+        id: product.id,
+        data: {
+          ...data,
+          price: data.price ? +data.price : undefined,
+          compare_at_price: data.compare_at_price ? +data.compare_at_price : undefined
+        }
+      })
+      toast.success("Cập nhập thành công")
+    } catch (error) {
+      toast.error("Cập nhập thất bại")
+
+    }
+  }
+
+  return <form
+    onSubmit={handleSubmit(onSubmit)}
+
+  >
+    <div className=' flex gap-2'>
+      <InputController
+        rules={{
+          required: "Nhập tên sản phẩm"
+        }}
+        label="Tên sản phẩm"
+        control={control}
+        name="title"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+      <InputController
+
+        label="barcode"
+        control={control}
+        name="barcode"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+    </div>
+    <div className=' flex gap-2'>
+      <InputController
+        rules={{
+          required: "Nhập giá"
+        }}
+        label="Giá"
+        control={control}
+        name="price"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+      <InputController
+
+        label="Giá so sánh"
+        control={control}
+        name="compare_at_price"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+    </div>
+    <div className=' flex gap-2'>
+      <InputController
+        rules={{
+          required: "Nhập giá"
+        }}
+        label="Tồn kho"
+        control={control}
+        name="inventory_quantity"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+      <InputController
+
+        label="sku"
+        control={control}
+        name="sku"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+    </div>
+    <Button variant="contained" type="submit">Lưu</Button>
+
+  </form>
 }

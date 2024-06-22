@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/Editor';
 import SelectCategory from './components/add/SelectCategory';
-import { createSlug   , generateVariants} from '@/utils/addProduct';
+import { createSlug } from '@/utils/addProduct';
 import SelectSpecifications from './components/add/SelectSpecifications';
 import OptionsForm from './components/add/OptionsForm';
 import { toast } from 'react-toastify';
@@ -106,8 +106,8 @@ export default function ProductAdd() {
   };
   useEffect(() => {
 
-    const variants = generateVariants(options)
-    setVariants(variants)
+    // const variants = generateVariants(options)
+    // setVariants(variants)
   }, [options])
 
 

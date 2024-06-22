@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
-import { OptionsUseQuery, Params, Error, DataUpdate} from "@/types/common";
+import { OptionsUseQuery, Params, Error} from "@/types/common";
 // import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
 import { Article } from "@/types/article";
 
@@ -29,31 +29,31 @@ export default {
       }
     );
   },
-  useAdd: () => {
-    const queryClient = useQueryClient();
+  // useAdd: () => {
+  //   const queryClient = useQueryClient();
 
-    return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
-      {
-        mutationFn: (data) => serviceAPI.add(data),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
+  //   return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
+  //     {
+  //       mutationFn: (data) => serviceAPI.add(data),
+  //       onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
 
-      }
-    );
-  },
-  useUpdate: () => {
-    const queryClient = useQueryClient();
-    return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(
-      {
-        mutationFn: (data) => {
-            const body = data.data
-          return serviceAPI.put(data.id, body)
-        },
-        onSuccess: (data) =>
-          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
-      }
+  //     }
+  //   );
+  // },
+  // useUpdate: () => {
+  //   const queryClient = useQueryClient();
+  //   return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(
+  //     {
+  //       mutationFn: (data) => {
+  //           const body = data.data
+  //         return serviceAPI.put(data.id, body)
+  //       },
+  //       onSuccess: (data) =>
+  //         queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
+  //     }
 
-    );
-  },
+  //   );
+  // },
   useDelete: () => {
     const queryClient = useQueryClient();
     return useMutation<number | string, Error, number | string>({

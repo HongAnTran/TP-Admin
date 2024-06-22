@@ -9,7 +9,7 @@ const article :MenuItemChildren = {
         title: 'bài viết',
         type: 'item',
         url: '/article',
-        icon: NewspaperIcon,
+        icon: <NewspaperIcon />,
         breadcrumbs: true,    
     
 };

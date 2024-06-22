@@ -1,17 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { OptionsUseQuery, Params, Error, DataUpdate } from "@/types/common";
-// import { CategoryProduct  , CategoryCreateInput} from "src/types/category";
-import { ProductSpecificationsCreateInput } from "@/types/productSpecifications";
-import { ProductSpecifications , ProductTypeSpecifications } from "@/types/product";
+import {  ProductCreateInput,  ProductVariant,  ProductVariantUpdateInput } from "@/types/product";
 
 
-const URL: string = "/specifications";
-const URL_TYPE: string = "/specifications/types";
+const URL: string = "/product-variant";
 const QUERY_KEY = URL;
 const serviceAPI = new ServiceAPI(URL);
-const serviceAPIType = new ServiceAPI(URL_TYPE);
-type DataQuery = ProductSpecifications;
+type DataQuery = ProductVariant;
 
 
 export default {
@@ -22,11 +18,6 @@ export default {
         queryFn: () => serviceAPI.getAll(params),
         ...options
       }
-    );
-  },
-  useListType: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<ProductTypeSpecifications[], Error>(
-      { queryKey: [URL_TYPE], queryFn: () => serviceAPIType.getAll(params), ...options }
     );
   },
   useDetail: (id: string, options?: OptionsUseQuery) => {
@@ -41,7 +32,7 @@ export default {
   useAdd: () => {
     const queryClient = useQueryClient();
 
-    return useMutation<ProductSpecificationsCreateInput, Error, Omit<ProductSpecificationsCreateInput, "id">>(
+    return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
       {
         mutationFn: (data) => serviceAPI.add(data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
@@ -51,11 +42,14 @@ export default {
   },
   useUpdate: () => {
     const queryClient = useQueryClient();
-    return useMutation<DataQuery, Error, DataUpdate<DataQuery>>(
+    return useMutation<ProductVariantUpdateInput, Error, DataUpdate<ProductVariantUpdateInput>>(
       {
-        mutationFn: (data) => serviceAPI.put(data.id, data.data),
-        onSuccess: (data) =>
-          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY, data.id] }),
+        mutationFn: (data) => {
+          const body = data.data
+          return serviceAPI.put(data.id, body)
+        },
+        onSuccess: () =>
+          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
       }
 
     );
@@ -70,4 +64,3 @@ export default {
     );
   },
 };
-

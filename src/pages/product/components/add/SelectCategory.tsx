@@ -21,10 +21,8 @@ export default function SelectCategory({ value, onChange }: { value: string, onC
         onChange={handleChange}
       >
         {cates.map(cate => {
-          return (<MenuItem key={cate.id} value={cate.id}>{cate.title}</MenuItem>)
+          return (<MenuItem key={cate.id} value={cate.id.toString()}>{cate.title}</MenuItem>)
         })}
-
-
       </Select>
     </FormControl>
 

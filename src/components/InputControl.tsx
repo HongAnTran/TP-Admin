@@ -6,7 +6,7 @@ import {
 } from "react-hook-form";
 import React from "react";
 import { twMerge } from "tailwind-merge";
-import { Typography } from "@mui/material";
+import { FormLabel, Typography } from "@mui/material";
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   iconAfter?: React.ReactNode;
   iconPrev?: React.ReactNode;
@@ -39,10 +39,12 @@ function InputController<
   label,
   placeholder = " ",
   type = "text",
-  labelClassName = "",
   requied,
+  rules,
+  defaultValue,
+  disabled
 }: InputPropsControl<TFieldValues, TName> & InputPropsCustom) {
-  const { field, fieldState } = useController({ name, control });
+  const { field, fieldState } = useController({ name, control ,rules , defaultValue , disabled});
   const {
     iconAfter,
     iconPrev,
@@ -55,15 +57,14 @@ function InputController<
     <>
       <div className={twMerge("flex flex-col gap-1 w-full", className)}>
         {label ? (
-          <label>
+          <FormLabel required={requied}>
             <Typography
-              
-              className={`font-medium ${labelClassName}`}
+              variant="body2"
             >
               {label}
             </Typography >
-            {requied && <span className="  text-error">*</span>}
-          </label>
+            {/* {requied && <span className="  text-error">*</span>} */}
+          </FormLabel>
         ) : null}
         <div className="flex-1 relative">
           <div>
@@ -80,11 +81,11 @@ function InputController<
               {...props}
               type={type}
               className={twMerge(
-                "input w-full  border  border-gray-600 h-[50px] focus:outline-none px-4 bg-white text-black",
+                "input w-full  border  rounded-md border-gray-400 h-[40px] focus:outline-none px-4 bg-white text-black",
                 iconAfter && "pr-10",
                 iconPrev && "pl-14",
                 classNameInput,
-                fieldState.error && "border-error"
+                fieldState.error && "border-red-500"
               )}
               placeholder={placeholder}
             />
@@ -98,7 +99,7 @@ function InputController<
             ) : null}
           </div>
           {fieldState.error?.message ? (
-            <p className="text-error"> {fieldState.error.message} </p>
+            <p className="  text-red-500 font-semibold mt-1"> {fieldState.error.message} </p>
           ) : null}
         </div>
       </div>

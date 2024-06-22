@@ -1,4 +1,4 @@
-import { ProductOption, ProductVariant } from "@/types/product";
+import { ProductOption, ProductVariantCreateInput } from "@/types/product";
 import { v4 as uuidv4 } from 'uuid';
 import unidecode from "unidecode"
 
@@ -17,8 +17,9 @@ export function createSlug(str: string) {
   const unaccentedStr = unidecode(str);
   return unaccentedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
-export function generateVariants(options: ProductOption[]): ProductVariant[] {
-  const variants: ProductVariant[] = [];
+export function generateVariants(options: ProductOption[]): ProductVariantCreateInput[] {
+  if(!options.length) return []
+  const variants: ProductVariantCreateInput[] = [];
   const compareAtPrice = 14990000;
   const price = 11490000;
   const inventoryQuantity = 1;
@@ -28,8 +29,7 @@ export function generateVariants(options: ProductOption[]): ProductVariant[] {
   const combinations = generateCombinations(options);
 
   combinations.forEach((combination, index) => {
-    const variant: ProductVariant = {
-      barcode: null,
+    const variant: ProductVariantCreateInput = {
       compare_at_price: compareAtPrice,
       option1: combination[0] || "",
       option2: combination[1] || "",
@@ -38,13 +38,23 @@ export function generateVariants(options: ProductOption[]): ProductVariant[] {
       price: price,
       sku: uuidv4(),
       title: combination.join(" / "),
-      updated_at: null,
       inventory_quantity: inventoryQuantity,
       available: available,
-
     };
     variants.push(variant);
   });
 
   return variants;
+}
+
+
+export function fillArray(length: number) {
+  return Array.from({ length }, () => "");
+}
+
+ export function fillArrayToLength(arr: any[], length: number, data: any = null) {
+  while (arr.length < length) {
+    arr.push(data);
+  }
+  return arr;
 }

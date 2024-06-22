@@ -11,7 +11,7 @@ const dashboard :MenuItemChildren = {
         title: 'Tổng quan',
         type: 'item',
         url: '/',
-        icon: DashboardIcon,
+        icon: <DashboardIcon />,
         breadcrumbs: true,    
     
 };

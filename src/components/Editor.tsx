@@ -25,7 +25,7 @@ function Editor({ value, onChange }: { value: string, onChange: (data: string) =
 
   };
 
-  const handleEditorChange = (event, editor: any) => {
+  const handleEditorChange = (_event: any, editor: any) => {
     const data = editor.getData();
     onChange(data);
   };

@@ -2,13 +2,23 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import { Link } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
-
+import { Product as ProductType } from '@/types/product';
+import { toast } from 'react-toastify';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Product() {
 
   const { data, isSuccess, error } = ProductsServicesAPI.useList()
 
 
+  const { mutateAsync } = ProductsServicesAPI.useDelete()
+
+  async function deleteProduct(id: ProductType["id"]) {
+
+    await mutateAsync(id)
+    toast.success(`Xóa thành công`)
+
+  }
   const columns: GridColDef[] = [
     {
       field: "title", headerName: 'Tên sản phẩm', width: 500, renderCell: (params) => {
@@ -17,6 +27,11 @@ export default function Product() {
     },
     { field: 'category', headerName: 'Nhóm sản phẩm', width: 200 },
     { field: 'vendor', headerName: 'Nhà cung cấp', width: 200 },
+    {
+      field: 'delete', headerName: 'hành động', width: 200, renderCell: (params) => {
+        return <Button onClick={() => { deleteProduct(params.row.id) }}><DeleteIcon /></Button>
+      }
+    },
 
   ];
 
@@ -34,29 +49,33 @@ export default function Product() {
   }))
 
   return (
-    <div className=' py-2'>
-      <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Danh sách sản phẩm</Typography>
-        <div className=' flex'>
-          <Link to={'add'}>
-            <Button variant="contained">Thêm sản phẩm</Button>
-          </Link>
+    <>
+      <div className=' py-2'>
+        <div className=' flex justify-between mb-2'>
+          <Typography variant="h1">Danh sách sản phẩm</Typography>
+          <div className=' flex'>
+            <Link to={'add'}>
+              <Button variant="contained">Thêm sản phẩm</Button>
+            </Link>
+          </div>
+        </div>
+        <div style={{ height: 600, width: '100%' }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+
+            checkboxSelection
+          />
         </div>
       </div>
-      <div style={{ height: 600, width: '100%' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-  
-          checkboxSelection
-        />
-      </div>
-    </div>
+
+
+    </>
   )
 }
 

@@ -13,12 +13,11 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  InputLabel,
   OutlinedInput,
   Stack,
   Typography,
-  useMediaQuery,
   CircularProgress,
+  FormLabel,
 } from "@mui/material";
 
 // third party
@@ -31,7 +30,6 @@ import AnimateButton from "@/ui-component/extended/AnimateButton";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import Google from "@/assets/images/icons/social-google.svg";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
  async function registerWithGoogleFirebase(): Promise<void> {
@@ -39,10 +37,8 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
   } catch (error: any) {
-    // Handle Errors here.
-    const errorCode = error.code;
     const errorMessage = error.message;
-    throw new Error(errorCode, errorMessage);
+    throw new Error(errorMessage);
   }
 }
 
@@ -56,14 +52,12 @@ const schema = Yup.object().shape({
 
 const FirebaseLogin = ({ ...others }) => {
   const theme: any = useTheme();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   const customization = useSelector((state: any) => state.custom);
-  const [checked, setChecked] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
-  const googleHandler = async () => {
-    await registerWithGoogleFirebase();
-  };
+  // const googleHandler = async () => {
+  //   await registerWithGoogleFirebase();
+  // };
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -118,14 +112,15 @@ const FirebaseLogin = ({ ...others }) => {
           values,
         }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
+                <FormLabel htmlFor="outlined-adornment-email-login">
+                Email Address / Username
+              </FormLabel>
             <FormControl
               fullWidth
               error={Boolean(touched.email && errors.email)}
               sx={{ ...theme.typography.customInput }}
             >
-              <InputLabel htmlFor="outlined-adornment-email-login">
-                Email Address / Username
-              </InputLabel>
+          
               <OutlinedInput
                 id="outlined-adornment-email-login email"
                 type="email"
@@ -133,7 +128,7 @@ const FirebaseLogin = ({ ...others }) => {
                 name="email"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                label="Email Address / Username"
+                // label="Email Address / Username"
                 inputProps={{}}
               />
               {touched.email && errors.email && (
@@ -145,15 +140,15 @@ const FirebaseLogin = ({ ...others }) => {
                 </FormHelperText>
               )}
             </FormControl>
-
+            <FormLabel htmlFor="outlined-adornment-password-login ">
+                Password
+              </FormLabel>
             <FormControl
               fullWidth
               error={Boolean(touched.password && errors.password)}
               sx={{ ...theme.typography.customInput }}
             >
-              <InputLabel htmlFor="outlined-adornment-password-login ">
-                Password
-              </InputLabel>
+             
               <OutlinedInput
                 id="outlined-adornment-password-login password"
                 type={showPassword ? "text" : "password"}
@@ -174,7 +169,7 @@ const FirebaseLogin = ({ ...others }) => {
                     </IconButton>
                   </InputAdornment>
                 }
-                label="Password"
+                // label="Password"
                 inputProps={{}}
               />
               {touched.password && errors.password && (
@@ -254,7 +249,7 @@ const FirebaseLogin = ({ ...others }) => {
           <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
         </Box>
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <AnimateButton>
           <Button
             disableElevation
@@ -281,7 +276,7 @@ const FirebaseLogin = ({ ...others }) => {
             Sign in with Google
           </Button>
         </AnimateButton>
-      </Grid>
+      </Grid> */}
     </>
   );
 };

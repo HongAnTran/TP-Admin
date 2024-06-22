@@ -7,6 +7,7 @@ import MainLayout from '../layout/MainLayout';
 import PrivateRouter from '@/utils/PrivateRouter';
 // login option 3 routing
 const Product = Loadable(lazy(() => import('@/pages/product/Product')));
+const Dashboard = Loadable(lazy(() => import('@/pages/dashboard/Dashboard')));
 const ProductAdd = Loadable(lazy(() => import('@/pages/product/ProductAdd')));
 const ProductEdit = Loadable(lazy(() => import('@/pages/product/ProductEdit')));
 const Category = Loadable(lazy(() => import('@/pages/category/Category')));
@@ -22,7 +23,7 @@ const MainRoutes: RouteObject = {
     children: [
         {
             path: '',
-            element: <p>trang chu</p>
+            element: <Dashboard/>
         },
         {
             path: '/product',
