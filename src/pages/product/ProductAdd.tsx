@@ -259,7 +259,7 @@ export default function ProductAdd() {
           </div>
 
         </Grid>
-        <Grid sm={3}  className=' sticky'>
+        <Grid sm={3} >
           <MainCard title="Danh mục" >
             <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
               setValue("category.connect.id", id)

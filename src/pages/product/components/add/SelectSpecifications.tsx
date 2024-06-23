@@ -17,11 +17,10 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
     <>
       <div>
         <ul>
-            
+
         </ul>
 
         <Button onClick={() => setOpen(true)} variant="contained" className=' mr-6'>Thêm thông số</Button>
-        <Button onClick={() => setOpenNew(true)} variant="contained">Thêm thông số mới</Button>
 
       </div>
 
@@ -31,8 +30,15 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
         </DialogContent>
       </Dialog>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="lg" fullWidth>
+
         <DialogContent>
           <FormSelectSpe value={value} onChange={handleChange} />
+          <div className=' flex justify-end gap-4'>
+
+            <Button onClick={() => setOpenNew(true)} variant="contained">Thêm thông số mới</Button>
+            <Button onClick={() => setOpen(false)} variant="contained">Xong</Button>
+          </div>
+
         </DialogContent>
       </Dialog>
     </>
