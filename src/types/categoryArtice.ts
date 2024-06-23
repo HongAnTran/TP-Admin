@@ -12,8 +12,15 @@ interface CategoryArtice {
   slug: string
   status: CategoryArticeStatus
 }
-
-export type { CategoryArtice }
+type CategoryArticeCreateInput = {
+  title: string
+  description?: string | null
+  image?: string | null
+  parent_id?: number | null
+  slug: string
+  status: number
+}
+export type { CategoryArtice  , CategoryArticeCreateInput}
 export {
   CategoryArticeStatus
 }

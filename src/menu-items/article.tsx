@@ -8,7 +8,7 @@ const article :MenuItemChildren = {
         id: 'article',
         title: 'bài viết',
         type: 'item',
-        url: '/article',
+        url: '/blog',
         icon: <NewspaperIcon />,
         breadcrumbs: true,    
     

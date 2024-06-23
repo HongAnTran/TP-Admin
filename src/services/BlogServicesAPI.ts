@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { OptionsUseQuery, Params, Error} from "@/types/common";
 // import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
-import { Article } from "@/types/article";
+import { Article   , ArticleCreateInput, Articles} from "@/types/article";
 
 const URL: string = "/articles";
 const QUERY_KEY = URL;
@@ -12,7 +12,7 @@ type DataQuery = Article;
 
 export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<DataQuery, Error>(
+    return useQuery<Articles, Error>(
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),
@@ -29,17 +29,17 @@ export default {
       }
     );
   },
-  // useAdd: () => {
-  //   const queryClient = useQueryClient();
+  useAdd: () => {
+    const queryClient = useQueryClient();
 
-  //   return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
-  //     {
-  //       mutationFn: (data) => serviceAPI.add(data),
-  //       onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
+    return useMutation<ArticleCreateInput, Error, Omit<ArticleCreateInput, "id">>(
+      {
+        mutationFn: (data) => serviceAPI.add(data),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
 
-  //     }
-  //   );
-  // },
+      }
+    );
+  },
   // useUpdate: () => {
   //   const queryClient = useQueryClient();
   //   return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(

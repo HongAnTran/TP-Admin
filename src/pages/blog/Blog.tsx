@@ -1,22 +1,21 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import { Link } from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
+import BlogServicesAPI from '@/services/BlogServicesAPI';
 
 
-export default function Product() {
+export default function Blog() {
 
-  const { data, isSuccess, error } = ProductsServicesAPI.useList()
+  const { data, isSuccess, error } = BlogServicesAPI.useList()
 
 
   const columns: GridColDef[] = [
     {
-      field: "title", headerName: 'Tên sản phẩm', width: 500, renderCell: (params) => {
+      field: "title", headerName: 'Tiêu đề', width: 500, renderCell: (params) => {
         return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
       }
     },
-    { field: 'category', headerName: 'Nhóm sản phẩm', width: 200 },
-    { field: 'vendor', headerName: 'Nhà cung cấp', width: 200 },
+    { field: 'category', headerName: 'Nhóm bài viết', width: 200 },
 
   ];
 
@@ -24,22 +23,20 @@ export default function Product() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.products.map(product => ({
+  const rows = data.articles.map(product => ({
     ...product,
     id: product.id,
     title: product.title,
-    vendor: product.vendor,
-    category: product.category?.title,
     slug: product.slug,
   }))
 
   return (
     <div className=' py-2'>
       <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Danh sách sản phẩm</Typography>
+        <Typography variant="h1">Danh sách bài viết</Typography>
         <div className=' flex'>
           <Link to={'add'}>
-            <Button variant="contained">Thêm sản phẩm</Button>
+            <Button variant="contained">Thêm bài viết</Button>
           </Link>
         </div>
       </div>

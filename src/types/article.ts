@@ -15,9 +15,27 @@ interface Article {
   published_date: string;
   description: string;
   thumnal_url: string
-  status: ArticleStatus
-  
+  published: boolean
+
 }
 
-export type { Article }
+interface Articles {
+  articles: Article[]
+  total: number
+}
+
+type ArticleCreateInput = {
+
+  title: string; // Tiêu đề của bài viết
+  slug: string;
+  content?: string; // Nội dung của bài viết
+  author_id?: number; // ID của tác giả (khóa ngoại)
+  category_id?: number; // ID của danh mục bài viết (khóa ngoại)
+  description?: string;
+  thumnal_url?: string
+  published?: boolean
+}
+
+
+export type { Article, ArticleCreateInput, Articles }
 export { ArticleStatus }

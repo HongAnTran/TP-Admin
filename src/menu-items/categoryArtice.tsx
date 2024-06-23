@@ -9,7 +9,7 @@ const categoryArtice :MenuItemChildren = {
         id: 'categoryArtice',
         title: 'Danh mục bài viết',
         type: 'item',
-        url: '/categoryArtice',
+        url: '/category-blog',
         icon: <Inventory2Icon />,
         breadcrumbs: true,    
     
