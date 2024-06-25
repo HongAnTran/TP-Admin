@@ -42,11 +42,11 @@ export default {
   },
   useUpdate: () => {
     const queryClient = useQueryClient();
-    return useMutation<ProductVariantUpdateInput, Error, DataUpdate<ProductVariantUpdateInput>>(
+    return useMutation<ProductVariant, Error, DataUpdate<ProductVariantUpdateInput>>(
       {
         mutationFn: (data) => {
           const body = data.data
-          return serviceAPI.put(data.id, body)
+          return serviceAPI.put<ProductVariant>(data.id, body)
         },
         onSuccess: () =>
           queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),

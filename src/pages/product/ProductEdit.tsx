@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { Product, ProductCreateInput, ProductOption, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
+import { Product, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Dialog, DialogContent, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/Editor';
 import SelectCategory from './components/add/SelectCategory';
-import SelectSpecifications from './components/add/SelectSpecifications';
-import OptionsForm from './components/add/OptionsForm';
+
 import { useParams } from 'react-router-dom';
-import { createSlug, fillArray, fillArrayToLength } from '@/utils/addProduct';
+import { createSlug, fillArrayToLength } from '@/utils/addProduct';
 import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
 import { toast } from 'react-toastify';
+import { convetNumberToPriceVND } from '@/utils';
 
 
 
@@ -33,7 +33,7 @@ function ProductEditForm({ product }: { product: Product }) {
 
   const { mutateAsync } = ProductsServicesAPI.useUpdate()
   // const [options, setOptions] = useState<ProductOption[]>(product.options)
-  const [variants, setVariants] = useState<ProductVariant[]>(product.variants)
+  const [variants, setVariants] = useState<ProductVariant[]>(product.variants.sort((a, b) => a.position - b.position))
   const [images, setImages] = useState<string[]>(fillArrayToLength(product.images, 4, ""))
 
   const [variantEdit, setVariantEdit] = useState<ProductVariant>(product.variants[0])
@@ -54,9 +54,6 @@ function ProductEditForm({ product }: { product: Product }) {
       images: product.images
     }
   });
-
-
-
   async function onSubmit(data: ProductUpdateInput) {
     try {
       await mutateAsync({
@@ -75,32 +72,30 @@ function ProductEditForm({ product }: { product: Product }) {
     }
   }
 
-  const handlePriceChange = (id: string, price: number) => {
-    setVariants(prevList =>
-      prevList.map(variant =>
-        variant.sku === id ? { ...variant, price } : variant
-      )
-    );
-  };
-  const handleComparePriceChange = (id: string, compareAtPrice: number) => {
-    setVariants(prevList =>
-      prevList.map(variant =>
-        variant.sku === id ? { ...variant, compare_at_price: compareAtPrice } : variant
-      )
-    );
-  };
+  async function updatePrice(data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min">) {
+    try {
+      await mutateAsync({
+        id: product.id,
+        data: {
+          ...data,
+        }
+      })
+      toast.success("Cập nhập thành công")
+
+    } catch (error) {
+      toast.error("Cập nhập thất bại")
+
+    }
+  }
   const handleInputChange = (index: number, value: string) => {
     const newImages = [...images];
     newImages[index] = value;
     setImages(newImages);
   };
-
-
   function onEditVariant(variant: ProductVariant) {
     setVariantEdit(variant)
     setOpenEdit(true)
   }
-
 
   return (
     <div className=' py-2 '>
@@ -220,9 +215,11 @@ function ProductEditForm({ product }: { product: Product }) {
                     <div className=' flex items-center  gap-2'>
                       <span>Giá</span>
                       <Input
-                        type="number"
-                        value={variant.price}
-                        onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
+                        className=' font-bold text-base'
+
+
+                        value={convetNumberToPriceVND(variant.price)}
+
                         placeholder="Price"
                         disabled
                       />
@@ -232,10 +229,10 @@ function ProductEditForm({ product }: { product: Product }) {
 
                       <Input
                         disabled
+                        className=' font-bold text-base'
+                        value={convetNumberToPriceVND(variant.compare_at_price)}
 
-                        type="number"
-                        value={variant.compare_at_price}
-                        onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
+
                         placeholder="Compare at Price"
                       />
                     </div>
@@ -265,7 +262,7 @@ function ProductEditForm({ product }: { product: Product }) {
 
       <Dialog open={openEdit} onClose={() => { setOpenEdit(false) }} >
         <DialogContent>
-          <FormEditVariant product={variantEdit} />
+          <FormEditVariant product={variantEdit} productDetail={product} onUpdatePrice={updatePrice} />
         </DialogContent>
       </Dialog>
     </div>
@@ -273,7 +270,7 @@ function ProductEditForm({ product }: { product: Product }) {
 }
 
 
-function FormEditVariant({ product }: { product: ProductVariant }) {
+function FormEditVariant({ product, productDetail, onUpdatePrice }: { product: ProductVariant, productDetail: Product, onUpdatePrice: (data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min">) => Promise<void> }) {
   const { mutateAsync } = ProductsVariantServicesAPI.useUpdate()
 
 
@@ -290,16 +287,37 @@ function FormEditVariant({ product }: { product: ProductVariant }) {
   });
 
   async function onSubmit(data: ProductVariantUpdateInput) {
-    // console.log(data)
-    // return
     try {
-      await mutateAsync({
+      const priceUpdate = data.price ? +data.price : undefined
+      const compare_at_price_update = data.compare_at_price ? +data.compare_at_price : undefined
+      const res = await mutateAsync({
         id: product.id,
         data: {
           ...data,
-          price: data.price ? +data.price : undefined,
-          compare_at_price: data.compare_at_price ? +data.compare_at_price : undefined
+          price: priceUpdate,
+          compare_at_price: compare_at_price_update
         }
+      })
+
+      const variants = productDetail.variants.filter(pro => pro.id !== product.id)
+      variants.push({ ...product, price: res.price, compare_at_price: res.compare_at_price })
+      let price = 0
+      let price_min = 0
+      let price_max = 0
+
+      const variantsSort = variants.sort((a, b) => a.price - b.price)
+      const variantPricemin = variantsSort[0]
+      price = variantPricemin.price
+      if (variants.length > 1) {
+        const variantPriceMax = variantsSort[variants.length - 1]
+        price_max = variantPriceMax.price
+        price_min = variantPricemin.price
+      }
+
+      await onUpdatePrice({
+        price,
+        price_max,
+        price_min
       })
       toast.success("Cập nhập thành công")
     } catch (error) {

@@ -14,7 +14,7 @@ export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
     return useQuery<Products, Error>(
       {
-        queryKey: [QUERY_KEY],
+        queryKey: [QUERY_KEY , JSON.stringify(params)],
         queryFn: () => serviceAPI.getAll(params),
         ...options
       }

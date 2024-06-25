@@ -5,14 +5,18 @@ import { Button, Typography } from '@mui/material';
 import { Product as ProductType } from '@/types/product';
 import { toast } from 'react-toastify';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
+import { createSlug } from '@/utils/addProduct';
+
+const limit = 10
 
 export default function Product() {
+  const [page, setPage] = useState(0)
 
-  const { data, isSuccess, error } = ProductsServicesAPI.useList()
-
+  const { data, isSuccess, error } = ProductsServicesAPI.useList({ take: 10, skip: page * limit })
 
   const { mutateAsync } = ProductsServicesAPI.useDelete()
-
+  console.log(createSlug("iPad Gen 9 2021 | Wifi 64GB (Likenew)"))
   async function deleteProduct(id: ProductType["id"]) {
 
     await mutateAsync(id)
@@ -63,11 +67,20 @@ export default function Product() {
           <DataGrid
             rows={rows}
             columns={columns}
+            pagination
+            paginationMode="server"
+            rowCount={data.total}
+            onPaginationModelChange={(mode => {
+              setPage(mode.page)
+            })}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: { page: page, pageSize: limit },
+              
               },
+
             }}
+
 
             checkboxSelection
           />

@@ -38,14 +38,16 @@ export default function ProductAdd() {
     try {
 
       let price = 0
+      let compare_at_price = 0
       let price_min = 0
       let price_max = 0
 
       const variantsSort = variants.sort((a, b) => a.price - b.price)
       const variantPricemin = variantsSort[0]
       price = variantPricemin.price
+      compare_at_price = variantPricemin.compare_at_price
       if (variants.length > 1) {
-        const variantPriceMax = variantsSort[0]
+        const variantPriceMax = variantsSort[variants.length - 1]
         price_max = variantPriceMax.price
         price_min = variantPricemin.price
       }
@@ -53,9 +55,12 @@ export default function ProductAdd() {
         ...data,
         slug: createSlug(data.title),
         price,
+        compare_at_price,
+        
         price_max,
         price_min,
         status: 1,
+      
         images: images.filter(img => img),
         featured_image: images[0],
         options: {
@@ -219,34 +224,34 @@ export default function ProductAdd() {
             <MainCard title="Biến thể">
               <OptionsForm onSubmit={(op) => setOptions(op)} />
 
-              
+
 
             </MainCard>
             <MainCard title="Danh sách biến thể">
-            <ul className=' mt-3 flex flex-col gap-2'>
+              <ul className=' mt-3 flex flex-col gap-2'>
                 {variants.map(variant => (
-                  <li  key={variant.sku}   className='  grid grid-cols-3 gap-4'>
-                    <Chip   color="primary" label={variant.title}/>
-                   <div className=' flex items-center  gap-2'>
-                    <span>Giá</span>
-                   <Input
-                      type="number"
-                      value={variant.price}
-                      onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
-                      placeholder="Price"
-                      
-                    />
-                   </div>
-                  <div className=' flex items-center  gap-2'>
-                  <span>Giá so sánh</span>
+                  <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
+                    <Chip color="primary" label={variant.title} />
+                    <div className=' flex items-center  gap-2'>
+                      <span>Giá</span>
+                      <Input
+                        type="number"
+                        value={variant.price}
+                        onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
+                        placeholder="Price"
 
-                  <Input
-                      type="number"
-                      value={variant.compare_at_price}
-                      onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
-                      placeholder="Compare at Price"
-                    />
-                  </div>
+                      />
+                    </div>
+                    <div className=' flex items-center  gap-2'>
+                      <span>Giá so sánh</span>
+
+                      <Input
+                        type="number"
+                        value={variant.compare_at_price}
+                        onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
+                        placeholder="Compare at Price"
+                      />
+                    </div>
                   </li>
                 ))}
               </ul>

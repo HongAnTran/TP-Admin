@@ -14,11 +14,17 @@ export function generateCombinations(options: ProductOption[], index: number = 0
   return combinations;
 }
 export function createSlug(str: string) {
-  const unaccentedStr = unidecode(str);
-  return unaccentedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+  // Bỏ ký tự đặc biệt
+  const cleanedStr = str.replace(/[^\w\s]/g, '').trim();
+  // Chuyển đổi sang ký tự không dấu
+  const unaccentedStr = unidecode(cleanedStr);
+  // Thay thế nhiều khoảng trắng liên tiếp bằng một khoảng trắng
+  const normalizedStr = unaccentedStr.replace(/\s+/g, ' ');
+  // Thay thế khoảng trắng bằng dấu gạch ngang và bỏ các ký tự không phải chữ
+  return normalizedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
 export function generateVariants(options: ProductOption[]): ProductVariantCreateInput[] {
-  if(!options.length) return []
+  if (!options.length) return []
   const variants: ProductVariantCreateInput[] = [];
   const compareAtPrice = 14990000;
   const price = 11490000;
@@ -52,7 +58,7 @@ export function fillArray(length: number) {
   return Array.from({ length }, () => "");
 }
 
- export function fillArrayToLength(arr: any[], length: number, data: any = null) {
+export function fillArrayToLength(arr: any[], length: number, data: any = null) {
   while (arr.length < length) {
     arr.push(data);
   }

@@ -1,8 +1,8 @@
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 
 interface Params {
-  limit?: number;
   skip?: number;
+  take? :number
 }
 interface TestApi {
   id: number;
