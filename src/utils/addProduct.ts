@@ -1,5 +1,4 @@
-import { ProductOption, ProductVariantCreateInput } from "@/types/product";
-import { v4 as uuidv4 } from 'uuid';
+import { Product, ProductOption,  ProductVariantCreateInput } from "@/types/product";
 import unidecode from "unidecode"
 
 export function generateCombinations(options: ProductOption[], index: number = 0, current: string[] = []): string[][] {
@@ -23,11 +22,22 @@ export function createSlug(str: string) {
   // Thay thế khoảng trắng bằng dấu gạch ngang và bỏ các ký tự không phải chữ
   return normalizedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
-export function generateVariants(options: ProductOption[]): ProductVariantCreateInput[] {
+
+export function createSKU(productTitle: Product["title"], variant: ProductVariantCreateInput) {
+   // Bước 1: Tạo mã sản phẩm từ tên sản phẩm
+   const productCode = productTitle.split(' ').map(word => word[0].toUpperCase()).join(''); // "iPad Gen 10 10.9 inch 2022 LTE" -> "IG10192022LTE"
+
+    const options = [variant.option1 , variant.option2 , variant.option3].filter(Boolean).map(op=>createSlug(op)).join("-")
+
+   const sku = `${productCode}-${options}-${variant.position}`;
+ 
+   return sku;
+}
+export function generateVariants(options: ProductOption[], productTitle: Product["title"]): ProductVariantCreateInput[] {
   if (!options.length) return []
   const variants: ProductVariantCreateInput[] = [];
-  const compareAtPrice = 14990000;
-  const price = 11490000;
+  const compareAtPrice = 0;
+  const price = 0;
   const inventoryQuantity = 1;
 
   const available = true;
@@ -42,11 +52,13 @@ export function generateVariants(options: ProductOption[]): ProductVariantCreate
       option3: combination[2] || "",
       position: index,
       price: price,
-      sku: uuidv4(),
       title: combination.join(" / "),
       inventory_quantity: inventoryQuantity,
       available: available,
+      sku : ""
     };
+
+    variant.sku = createSKU(productTitle, variant)
     variants.push(variant);
   });
 

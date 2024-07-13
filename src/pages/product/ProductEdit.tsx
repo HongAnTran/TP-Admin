@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import { Product, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/Editor';
 import SelectCategory from './components/add/SelectCategory';
-
 import { useParams } from 'react-router-dom';
 import { createSlug, fillArrayToLength } from '@/utils/addProduct';
 import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
@@ -19,17 +18,17 @@ import { convetNumberToPriceVND } from '@/utils';
 export default function ProductEdit() {
 
   const { productId } = useParams();
-  const { data, isSuccess } = ProductsServicesAPI.useDetail(productId || "")
+  const { data, isSuccess, refetch } = ProductsServicesAPI.useDetail(productId || "")
 
   if (!isSuccess) return <></>
 
   return (
-    <ProductEditForm product={data} />
+    <ProductEditForm product={data} refetch={refetch} />
   )
 }
 
 
-function ProductEditForm({ product }: { product: Product }) {
+function ProductEditForm({ product, refetch }: { product: Product, refetch: () => void }) {
 
   const { mutateAsync } = ProductsServicesAPI.useUpdate()
   // const [options, setOptions] = useState<ProductOption[]>(product.options)
@@ -38,6 +37,12 @@ function ProductEditForm({ product }: { product: Product }) {
 
   const [variantEdit, setVariantEdit] = useState<ProductVariant>(product.variants[0])
   const [openEdit, setOpenEdit] = useState(false)
+
+
+
+  useEffect(() => {
+    setVariants(product.variants.sort((a, b) => a.position - b.position))
+  }, [product.variants])
 
   const { handleSubmit, control, setValue, watch } = useForm<ProductUpdateInput>({
     mode: "onSubmit",
@@ -80,7 +85,10 @@ function ProductEditForm({ product }: { product: Product }) {
           ...data,
         }
       })
+
+
       toast.success("Cập nhập thành công")
+      refetch()
 
     } catch (error) {
       toast.error("Cập nhập thất bại")
@@ -270,7 +278,7 @@ function ProductEditForm({ product }: { product: Product }) {
 }
 
 
-function FormEditVariant({ product, productDetail, onUpdatePrice }: { product: ProductVariant, productDetail: Product, onUpdatePrice: (data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min">) => Promise<void> }) {
+function FormEditVariant({ product, productDetail, onUpdatePrice }: { product: ProductVariant, productDetail: Product, onUpdatePrice: (data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min" | "compare_at_price">) => Promise<void> }) {
   const { mutateAsync } = ProductsVariantServicesAPI.useUpdate()
 
 
@@ -282,42 +290,58 @@ function FormEditVariant({ product, productDetail, onUpdatePrice }: { product: P
       compare_at_price: product.compare_at_price,
       inventory_quantity: product.inventory_quantity,
       price: product.price,
-      sku: product.sku
+      sku: product.sku,
+      position: product.position
     }
   });
 
   async function onSubmit(data: ProductVariantUpdateInput) {
     try {
-      const priceUpdate = data.price ? +data.price : undefined
-      const compare_at_price_update = data.compare_at_price ? +data.compare_at_price : undefined
+      const priceUpdate = typeof data.price !== "undefined" ? +data.price : undefined
+      const compare_at_price_update = typeof data.compare_at_price !== "undefined" ? +data.compare_at_price : undefined
+      const inven = typeof data.inventory_quantity !== "undefined" ? +data.inventory_quantity : undefined
+
+      const position = data.position ? +data.position : undefined
       const res = await mutateAsync({
         id: product.id,
         data: {
           ...data,
+          position: position,
           price: priceUpdate,
-          compare_at_price: compare_at_price_update
+          compare_at_price: compare_at_price_update,
+          inventory_quantity: inven
         }
       })
 
       const variants = productDetail.variants.filter(pro => pro.id !== product.id)
-      variants.push({ ...product, price: res.price, compare_at_price: res.compare_at_price })
+      variants.push({ ...res })
       let price = 0
+      let compare_at_price = 0
       let price_min = 0
       let price_max = 0
 
-      const variantsSort = variants.sort((a, b) => a.price - b.price)
-      const variantPricemin = variantsSort[0]
-      price = variantPricemin.price
+      const variantsSortPosition = variants.slice().sort((a, b) => a.position - b.position)
+      const variantsSortPrice = variants.slice().sort((a, b) => a.price - b.price)
+
+      const variantDefault = variantsSortPosition[0]
+      const variantMinPrice = variantsSortPrice[0]
+
+
+      price = variantDefault.price
+      compare_at_price = variantDefault.compare_at_price
+
+
       if (variants.length > 1) {
-        const variantPriceMax = variantsSort[variants.length - 1]
-        price_max = variantPriceMax.price
-        price_min = variantPricemin.price
+        const variantMaxPrice = variantsSortPrice[variants.length - 1]
+        price_max = variantMaxPrice.price
+        price_min = variantMinPrice.price
       }
 
       await onUpdatePrice({
         price,
         price_max,
-        price_min
+        price_min,
+        compare_at_price
       })
       toast.success("Cập nhập thành công")
     } catch (error) {
@@ -395,6 +419,20 @@ function FormEditVariant({ product, productDetail, onUpdatePrice }: { product: P
         className="my-3"
         labelClassName="text-[#272727]"
       />
+    </div>
+    <div className=' flex gap-2'>
+      <InputController
+        rules={{
+          required: "nhap"
+        }}
+        label="Vị trí"
+        control={control}
+        name="position"
+        type="text"
+        className="my-3"
+        labelClassName="text-[#272727]"
+      />
+
     </div>
     <Button variant="contained" type="submit">Lưu</Button>
 

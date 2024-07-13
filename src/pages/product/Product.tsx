@@ -6,17 +6,25 @@ import { Product as ProductType } from '@/types/product';
 import { toast } from 'react-toastify';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from 'react';
-import { createSlug } from '@/utils/addProduct';
+import InputController from '@/components/InputControl';
+import { useForm } from 'react-hook-form';
 
 const limit = 10
 
 export default function Product() {
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useState(1)
 
-  const { data, isSuccess, error } = ProductsServicesAPI.useList({ take: 10, skip: page * limit })
+
+  const [key, setKey] = useState("")
+
+  const { data, isSuccess, error } = ProductsServicesAPI.useList({ limit, page: page, keyword: key })
 
   const { mutateAsync } = ProductsServicesAPI.useDelete()
-  console.log(createSlug("iPad Gen 9 2021 | Wifi 64GB (Likenew)"))
+
+  const { control, handleSubmit } = useForm({
+    defaultValues: { key: "" }
+  })
+
   async function deleteProduct(id: ProductType["id"]) {
 
     await mutateAsync(id)
@@ -63,6 +71,14 @@ export default function Product() {
             </Link>
           </div>
         </div>
+        <div>
+          <form onSubmit={handleSubmit((data) => {
+            setKey(data.key)
+          })}>
+            <InputController control={control} name="key" />
+            <Button type="submit" >Tìm</Button>
+          </form>
+        </div>
         <div style={{ height: 600, width: '100%' }}>
           <DataGrid
             rows={rows}
@@ -75,13 +91,11 @@ export default function Product() {
             })}
             initialState={{
               pagination: {
-                paginationModel: { page: page, pageSize: limit },
-              
+                paginationModel: { page: page - 1, pageSize: limit },
+
               },
 
             }}
-
-
             checkboxSelection
           />
         </div>

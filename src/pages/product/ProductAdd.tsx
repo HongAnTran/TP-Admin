@@ -34,6 +34,8 @@ export default function ProductAdd() {
     }
   });
 
+  const title = watch("title")
+
   async function onSubmit(data: ProductCreateInput) {
     try {
 
@@ -41,13 +43,21 @@ export default function ProductAdd() {
       let compare_at_price = 0
       let price_min = 0
       let price_max = 0
+      const variantsSortPosition = variants.slice().sort((a, b) => a.position - b.position)
+      const variantsSortPrice = variants.slice().sort((a, b) => a.price - b.price)
 
-      const variantsSort = variants.sort((a, b) => a.price - b.price)
-      const variantPricemin = variantsSort[0]
-      price = variantPricemin.price
-      compare_at_price = variantPricemin.compare_at_price
+
+
+      const variantPricemin = variantsSortPrice[0]
+      const variantDefault = variantsSortPosition[0]
+
+
+      price = variantDefault.price
+      compare_at_price = variantDefault.compare_at_price
+
+
       if (variants.length > 1) {
-        const variantPriceMax = variantsSort[variants.length - 1]
+        const variantPriceMax = variantsSortPrice[variants.length - 1]
         price_max = variantPriceMax.price
         price_min = variantPricemin.price
       }
@@ -56,11 +66,11 @@ export default function ProductAdd() {
         slug: createSlug(data.title),
         price,
         compare_at_price,
-        
+
         price_max,
         price_min,
         status: 1,
-      
+
         images: images.filter(img => img),
         featured_image: images[0],
         options: {
@@ -112,9 +122,11 @@ export default function ProductAdd() {
     setImages(newImages);
   };
   useEffect(() => {
-    const variants = generateVariants(options)
-    setVariants(variants)
-  }, [options])
+    if (title) {
+      const variants = generateVariants(options, title || "")
+      setVariants(variants)
+    }
+  }, [options, title])
 
 
   return (

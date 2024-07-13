@@ -205,6 +205,7 @@ type ProductUpdateInput = {
   meta_keywords?: string | null
   featured_image?: string | null
   price?: number
+  compare_at_price?: number
   price_max?: number
   price_min?: number
   images?: string[]
