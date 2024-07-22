@@ -51,11 +51,11 @@ export default function Product() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.products.map(product => ({
+  const rows = data.datas.map(product => ({
     ...product,
     id: product.id,
     title: product.title,
-    vendor: product.vendor,
+    brand: product.brand?.name,
     category: product.category?.title,
     slug: product.slug,
   }))
@@ -96,7 +96,6 @@ export default function Product() {
               },
 
             }}
-            checkboxSelection
           />
         </div>
       </div>

@@ -1,7 +1,3 @@
-enum CategoryProductStatus {
-  DRAFT,
-  SHOW
-}
 
 
 interface CategoryProduct {
@@ -10,17 +6,24 @@ interface CategoryProduct {
   description: string | null
   image: string
   slug: string
-  status: CategoryProductStatus
+  published: boolean
+  meta_data?: {
+    meta_title?: string
+    meta_description?: string
+    meta_keywords?: string
+  }
+
 }
 type CategoryCreateInput = {
   title: string
   description?: string | null
   image?: string | null
-  parent_id?: number | null
   slug: string
-  status: 'DRAFT' | 'SHOW'
+  published?: boolean
+  meta_data?: {
+    meta_title?: string
+    meta_description?: string
+    meta_keywords?: string
+  }
 }
-export type { CategoryProduct  , CategoryCreateInput}
-export {
-  CategoryProductStatus
-}
+export type { CategoryProduct, CategoryCreateInput }

@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
-import { Button, Typography } from '@mui/material';
+import { Button, Checkbox, Typography } from '@mui/material';
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
 
 
@@ -17,7 +17,16 @@ export default function Category() {
         return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
       }
     },
-    // { field: 'vendor', headerName: 'Nhà cung cấp', width: 200 },
+    {
+      field: "slug", headerName: 'slug', width: 200, renderCell: (params) => {
+        return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
+      }
+    },
+    {
+      field: "published", headerName: 'Trạng thái', width: 100, renderCell: (params) => {
+        return <Checkbox checked={params.value}  />
+      }
+    },
 
   ];
 
@@ -27,9 +36,7 @@ export default function Category() {
 
   const rows = data.map(cate => ({
     ...cate,
-    id: cate.id,
-    title: cate.title,
-    slug: cate.slug,
+
 
   }))
 
@@ -49,11 +56,10 @@ export default function Category() {
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
+              paginationModel: { page: 0, pageSize: 10 },
             },
           }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
+          pageSizeOptions={[10, 10]}
         />
       </div>
     </div>

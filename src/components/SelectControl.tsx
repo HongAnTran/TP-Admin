@@ -51,7 +51,6 @@ function SelectController<
 
 
   function handlerChange(value: ValueOptionType) {
-    console.log(value,mutiple)
     if (mutiple && field.value.length) {
       if (!field.value?.includes(value)) {
         field.onChange([...field.value, value]);
@@ -82,15 +81,12 @@ function SelectController<
           </label>
         ) : null}
         <div className="flex-1 relative z-[1]">
-          <div className="relative inline-block z-[1]">
+          <div className="relative z-[1]">
             <div
               tabIndex={0}
               className={twMerge(
                 "bg-white translate cursor-pointer  z-[1] m-1 px-[13px] min-w-[150px] h-10  py-[8px]  flex  items-center  justify-between gap-[6px] rounded border border-gray-600",
 
-                // {
-                //   "min-w-[300px]": mutiple,
-                // },
                 selectClassName
               )}
               onClick={() => {
@@ -145,7 +141,7 @@ function SelectController<
                     key={index}
                     value={option.value}
                     className={cn(
-                      " cursor-pointer hover:bg-primary  p-2 border-b  border-[#2727271a] bg-white text-[#27272780] hover:text-white",
+                      " cursor-pointer hover:bg-black  p-2 border-b  border-[#2727271a] bg-white text-[#27272780] hover:text-white",
                       {
                         "bg-primary text-white": field?.value === option.value,
                       },

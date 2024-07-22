@@ -1,18 +1,22 @@
 import { CategoryProduct } from "./categoryProduct";
 import { FilterBase } from "./common";
+import { Brand } from "./brand";
 
 type ProductId = number
 enum ProductStatus {
   DRAFT,
   SHOW,
 }
-
 interface Product {
   id: ProductId;
   title: string;
   slug: string
+  category_id: number
+  category: CategoryProduct
   description_html: string | null
-  vendor: string | null
+  brand: Brand | null
+  brand_id: number | null
+  short_description: string | null
   available: boolean
   status: ProductStatus,
   created_at: string
@@ -20,27 +24,40 @@ interface Product {
   published_at: string | null
   barcode: string | null
   options: ProductOption[]
-  short_description: string | null
-  tags: ProductTags[] | null
+  // tags: ProductTags[] | null
+  compare_at_price: number
   price: number
-  compare_at_price:number
   price_min: number
   price_max: number
-
   // metadata
-  category_id: number
-  images: string[]
-  featured_image: string
-
-  // image: ProductImage | null
+  images: ProductImage[]
+  categories: ProductCategories[]
   variants: ProductVariant[]
-  category: CategoryProduct | null
-  rating: ProductRating | null
   specifications: ProductSpecifications[]
+  ratings: any
   // meta
-  meta_title: string | null
-  meta_description: string | null
-  meta_keywords: string | null
+  meta_data: {
+    meta_title?: string
+    meta_description?: string
+    meta_keywords?: string
+  }
+}
+interface ProductCategories {
+  id: number
+  category: CategoryProduct
+  categoryId: number
+  priority: number
+}
+interface ProductImage {
+  created_at: null | string,
+  id: number,
+  alt_text: string | null
+  position: number,
+  product_id: ProductId,
+  updated_at: null | string,
+  url: string,
+  is_featured: boolean
+  productVariant: number[]
 }
 
 // type ProductList = Pick<Product, "id"|"title" | "slug" |"">
@@ -61,8 +78,10 @@ interface ProductVariant {
   // image_id: number,
   available: boolean,
 }
+
+
 interface ProductVariantCreateInput {
-  barcode?:string,
+  barcode?: string,
   compare_at_price: number,
   option1: string,
   option2: string,
@@ -71,20 +90,12 @@ interface ProductVariantCreateInput {
   price: number,
   sku: string,
   title: string,
-  updated_at?:string,
+  updated_at?: string,
   inventory_quantity: number,
   available: boolean,
 }
 
-// interface ProductImage {
-//   created_at: null | string,
-//   id: number,
-//   position: number,
-//   product_id: ProductId,
-//   updated_at: null | string,
-//   src: string,
-//   variant_ids: number[]
-// }
+
 
 interface ProductOption {
   name: string,
@@ -94,40 +105,24 @@ interface ProductOption {
 }
 
 
-interface ProductTags {
-  id: number
-  value: string | number
-  type_id: number
-}
+
 interface ProductSpecifications {
   id: number
-  type_id: number
+  group_id: number
   name: string
-  value: string[]
-  description?: string
+  value: string
 }
 interface ProductTypeSpecifications {
   id: number
   name: string
-  description?: string
+}
+interface ProductGroupSpecifications {
+  id: number
+  name: string
+  type_id: number
 }
 
 
-type ProductOrder = Pick<Product, | "title" | "slug" | "category_id" | "vendor" | "barcode"> & {
-  id: number,
-  line_price: number
-  price: number
-  price_original: number
-  line_price_original: number
-  variant_id: number
-  product_id: ProductId
-  product_title: string
-  variant_title: string
-  variant_options: string[]
-  quantity: number
-  image: string
-  selected: boolean
-}
 interface ProductRating {
   id: number,
   count: number
@@ -143,7 +138,7 @@ interface ProductsParams extends FilterBase {
   ids?: string
 }
 interface Products {
-  products: Product[]
+  datas: Product[]
   total: number
 }
 export { ProductStatus }
@@ -153,23 +148,37 @@ type ProductCreateInput = {
   title: string
   slug: string
   description_html?: string | null
-  vendor?: string | null
   available?: boolean
+  brand?: {
+    connect: { id: number }
+
+  },
+
   status?: number
   created_at?: Date | string
   updated_at?: Date | string | null
   published_at?: Date | string | null
   barcode?: string | null
   short_description?: string | null
-  meta_title?: string | null
-  meta_description?: string | null
-  meta_keywords?: string | null
-  featured_image?: string | null
+  meta_data: {
+    meta_title?: string | null
+    meta_description?: string | null
+    meta_keywords?: string | null
+  }
   price?: number
-  compare_at_price?  : number
+  compare_at_price?: number
   price_max?: number
   price_min?: number
-  images?: string[]
+  images?: {
+    createMany: {
+      data: {
+        url: string
+        alt_text?: string | null
+        position: number
+        is_featured?: boolean
+      }[]
+    }
+  },
   category?: {
     connect: { id: number }
   }
@@ -185,6 +194,12 @@ type ProductCreateInput = {
 
   specifications?: {
     connect: { id: number }[]
+  },
+  sub_categories?: {
+    create: {
+      category: { connect : {id:number}}
+    }[],
+
   }
 }
 
@@ -213,4 +228,4 @@ type ProductUpdateInput = {
 }
 
 type ProductVariantUpdateInput = Omit<Partial<ProductVariant>, "id">
-export type { Product, ProductVariantCreateInput, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductOrder, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

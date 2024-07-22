@@ -16,7 +16,6 @@ export default function OptionsForm(
     }
   })
 
-  console.log(defaultValue)
   const { control, register, handleSubmit, watch } = methods;
 
   const { fields, append, remove } = useFieldArray({

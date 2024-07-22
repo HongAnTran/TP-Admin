@@ -7,7 +7,6 @@ import Editor from '@/components/Editor';
 import { createSlug } from '@/utils/addProduct';
 import { CategoryCreateInput } from '@/types/categoryProduct';
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
-import SelectCategory from '../product/components/add/SelectCategory';
 import { toast } from 'react-toastify';
 
 
@@ -26,16 +25,15 @@ export default function CategoryAdd() {
       const res = await mutateAsync({
         ...data,
         slug: createSlug(data.title),
-        status: "SHOW"
+        published: true
       })
       toast.error(`Thêm danh mục ${res.title} thành công`)
       reset({
         title: "",
         slug: "",
-        parent_id: null,
         description: "",
         image: "",
-        status: "SHOW"
+        published: true
       })
     } catch (error) {
       toast.error(JSON.stringify(error))
@@ -117,14 +115,6 @@ export default function CategoryAdd() {
           </div>
 
         </Grid>
-        <Grid sm={3}>
-          <MainCard title="Danh mục cha">
-            <SelectCategory value={watch("parent_id")?.toString() || ""} onChange={(id) => {
-              setValue("parent_id", id)
-            }} />
-          </MainCard>
-        </Grid>
-
       </Grid>
     </div>
   )

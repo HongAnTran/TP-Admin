@@ -11,14 +11,14 @@ function FormAddSpe() {
   const { handleSubmit, control, reset } = useForm({
     mode: "onSubmit",
   });
-  const { data: specifications, isSuccess } = SpecificationsProductsServicesAPI.useListType({}, { placeholderData: [] })
+  const { data: specifications, isSuccess } = SpecificationsProductsServicesAPI.useListGroup({}, { placeholderData: [] })
   const { mutateAsync } = SpecificationsProductsServicesAPI.useAdd()
 
   async function onSubmit(data: any) {
-    const values = data.value.split(",")
+
     await mutateAsync({
       ...data,
-      value: values
+   
     })
     reset()
   }
@@ -34,38 +34,28 @@ function FormAddSpe() {
 
       >
         <div className=' flex gap-2'>
+        <InputController
+
+label="giá trị"
+control={control}
+name="value"
+type="text"
+className="my-3"
+labelClassName="text-[#272727]"
+/>
           <InputController
 
-            label="Tên"
+            label="Link"
             control={control}
-            name="name"
+            name="link"
             type="text"
             className="my-3"
             labelClassName="text-[#272727]"
           />
-          <InputController
-
-            label="giá trị"
-            control={control}
-            name="value"
-            type="text"
-            className="my-3"
-            labelClassName="text-[#272727]"
-          />
+      
         </div>
-        <div className=' flex gap-2 items-center'>
-          <SelectController label="Loại thông số" name="type.connect.id" control={control} options={specifications?.map(cate => ({ label: cate.name, value: cate.id }))} />
-
-          <InputController
-
-            label="Mô tả"
-            control={control}
-            name="description"
-            type="text"
-            className="my-3"
-            labelClassName="text-[#272727]"
-          />
-
+        <div className=''>
+          <SelectController className="w-full" selectClassName="w-full" label="Loại thông số" name="group.connect.id" control={control} options={specifications?.map(cate => ({ label: cate.name, value: cate.id }))} />
         </div>
         <Button variant="contained" type="submit">Lưu</Button>
 

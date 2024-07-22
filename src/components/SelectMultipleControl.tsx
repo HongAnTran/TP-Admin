@@ -133,7 +133,7 @@ function SelectMultipleControl<
             </div>
             <ul
               tabIndex={0}
-              className={`bg-white border border-gray-900 rounded-b shadow overflow-hidden w-full flex flex-col gap-3 mt-[-1px] absolute top-ful left-0 transition-all duration-500 overflow-y-scroll scrollbarCustomer p-3 ${
+              className={`bg-white border border-gray-900 rounded-b shadow overflow-hidden w-full flex flex-col gap-3 mt-[-1px] absolute z-10 top-ful left-0 transition-all duration-500 overflow-y-scroll scrollbarCustomer p-3 ${
                 open ? `opacity-100 max-h-[900px] ` : "opacity-0 max-h-0"
               }`}
             >

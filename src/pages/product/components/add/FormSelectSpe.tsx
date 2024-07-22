@@ -16,7 +16,7 @@ const MenuProps = {
 function FormSelectSpe({ value, onChange }: { value: number[], onChange: (ids: number[]) => void }) {
 
 
-  const { data: specifications, isSuccess } = SpecificationsProductsServicesAPI.useListType({}, { placeholderData: [] })
+  const { data: specifications, isSuccess } = SpecificationsProductsServicesAPI.useListGroup({}, { placeholderData: [] })
 
   const { data, isSuccess: isSuccessList } = SpecificationsProductsServicesAPI.useList({})
 
@@ -37,7 +37,7 @@ function FormSelectSpe({ value, onChange }: { value: number[], onChange: (ids: n
       <Typography variant="h2">Thêm thông số cho sản phẩm</Typography>
       <div className=" grid grid-cols-2 mt-4 gap-4">
         {specifications.map(type => {
-          const listSpe = data.filter(spe => spe.type_id === type.id)
+          const listSpe = data.filter(spe => spe.group_id === type.id)
           return <div>
             <Typography variant="h4">{type.name}</Typography>
             <FormControl sx={{ m: 1, width: 600 }}>

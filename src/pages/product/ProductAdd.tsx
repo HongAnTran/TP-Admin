@@ -11,6 +11,8 @@ import { createSlug, fillArray, generateVariants } from '@/utils/addProduct';
 import SelectSpecifications from './components/add/SelectSpecifications';
 import OptionsForm from './components/add/OptionsForm';
 import { toast } from 'react-toastify';
+import SelectBrand from './components/add/SelectBrand';
+import SelectCategorySub from './components/add/SelectCategorySub';
 
 
 
@@ -30,7 +32,9 @@ export default function ProductAdd() {
       specifications: {
         connect: []
       },
-      vendor: "Apple"
+      sub_categories: {
+        create: []
+      }
     }
   });
 
@@ -38,7 +42,6 @@ export default function ProductAdd() {
 
   async function onSubmit(data: ProductCreateInput) {
     try {
-
       let price = 0
       let compare_at_price = 0
       let price_min = 0
@@ -56,11 +59,16 @@ export default function ProductAdd() {
       compare_at_price = variantDefault.compare_at_price
 
 
+
+
       if (variants.length > 1) {
         const variantPriceMax = variantsSortPrice[variants.length - 1]
         price_max = variantPriceMax.price
         price_min = variantPricemin.price
       }
+
+      const subIds = data.sub_categories?.create as unknown as number[]
+
       await mutateAsync({
         ...data,
         slug: createSlug(data.title),
@@ -71,8 +79,13 @@ export default function ProductAdd() {
         price_min,
         status: 1,
 
-        images: images.filter(img => img),
-        featured_image: images[0],
+        images: {
+          createMany: {
+            data: images.filter(img => img).map((img, index) => {
+              return { position: index + 1, url: img, is_featured: index === 0 }
+            })
+          }
+        },
         options: {
           createMany: {
             data: options.map((option, index) => ({ position: index + 1, name: option.name, values: option.values }))
@@ -85,6 +98,11 @@ export default function ProductAdd() {
         },
         specifications: {
           connect: data.specifications?.connect || []
+        },
+        sub_categories: {
+          create: subIds.map((id: number) => ({
+            category: { connect: { id: id } }
+          })) || []
         }
       })
       toast.success(`Thêm thành công`)
@@ -156,7 +174,12 @@ export default function ProductAdd() {
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                  <InputController
+                  <SelectBrand
+                    value={watch("brand.connect.id")?.toString() || ""} onChange={(id) => {
+                      setValue("brand.connect.id", id)
+                    }}
+                  />
+                  {/* <InputController
 
                     label="Nhà cung cấp"
                     control={control}
@@ -164,7 +187,7 @@ export default function ProductAdd() {
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
-                  />
+                  /> */}
                 </div>
                 <div className=' flex gap-2'>
                   <InputController
@@ -199,7 +222,7 @@ export default function ProductAdd() {
 
                     label="Tiêu đề meta"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -208,7 +231,7 @@ export default function ProductAdd() {
 
                     label="Mô tả meta"
                     control={control}
-                    name="meta_description"
+                    name="meta_data.meta_description"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -278,9 +301,19 @@ export default function ProductAdd() {
         </Grid>
         <Grid sm={3} >
           <MainCard title="Danh mục" >
-            <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-              setValue("category.connect.id", id)
-            }} />
+            <SelectCategory
+              value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
+                setValue("category.connect.id", id)
+              }}
+            />
+          </MainCard>
+          <MainCard title="Danh mục phụ" >
+            <div className=' h-[500px]'>
+              <SelectCategorySub
+                name="sub_categories.create"
+                control={control}
+              />
+            </div>
           </MainCard>
         </Grid>
       </Grid>

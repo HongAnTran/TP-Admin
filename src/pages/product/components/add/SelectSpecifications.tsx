@@ -16,9 +16,7 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
   return (
     <>
       <div>
-        <ul>
-
-        </ul>
+      
 
         <Button onClick={() => setOpen(true)} variant="contained" className=' mr-6'>Thêm thông số</Button>
 
