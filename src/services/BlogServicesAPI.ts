@@ -1,20 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
-import { OptionsUseQuery, Params, Error, DataUpdate} from "@/types/common";
+import { OptionsUseQuery, Params, Error} from "@/types/common";
+// import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
+import { Article   , ArticleCreateInput, Articles} from "@/types/article";
 
-interface Data{
-  id : number
-}
-
-const URL: string = "/ex";
+const URL: string = "/articles";
 const QUERY_KEY = URL;
 const serviceAPI = new ServiceAPI(URL);
-type DataQuery = Data;
+type DataQuery = Article;
 
 
 export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<DataQuery[], Error>(
+    return useQuery<Articles, Error>(
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),
@@ -34,7 +32,7 @@ export default {
   useAdd: () => {
     const queryClient = useQueryClient();
 
-    return useMutation<Data, Error, Omit<Data, "id">>(
+    return useMutation<ArticleCreateInput, Error, Omit<ArticleCreateInput, "id">>(
       {
         mutationFn: (data) => serviceAPI.add(data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
@@ -42,20 +40,20 @@ export default {
       }
     );
   },
-  useUpdate: () => {
-    const queryClient = useQueryClient();
-    return useMutation<Data, Error, DataUpdate<Data>>(
-      {
-        mutationFn: (data) => {
-            const body = data.data
-          return serviceAPI.put(data.id, body)
-        },
-        onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
-      }
+  // useUpdate: () => {
+  //   const queryClient = useQueryClient();
+  //   return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(
+  //     {
+  //       mutationFn: (data) => {
+  //           const body = data.data
+  //         return serviceAPI.put(data.id, body)
+  //       },
+  //       onSuccess: (data) =>
+  //         queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
+  //     }
 
-    );
-  },
+  //   );
+  // },
   useDelete: () => {
     const queryClient = useQueryClient();
     return useMutation<number | string, Error, number | string>({

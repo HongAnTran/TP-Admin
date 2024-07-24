@@ -2,15 +2,7 @@
 import {  initializeApp } from "firebase/app";
 import { getFirestore ,connectFirestoreEmulator} from "firebase/firestore";
 import { getAuth , connectAuthEmulator } from "firebase/auth";
-// const firebaseConfig = {
-//   apiKey: import.meta.env.FIRE_BASE_KEY,
-//   authDomain: "",
-//   projectId: "",
-//   storageBucket: "",
-//   messagingSenderId: "",
-//   appId:  import.meta.env.FIRE_BASE_APP_ID,
-//   measurementId: ""
-// };
+import { getAnalytics } from "firebase/analytics";
 const firebaseConfig = {
   apiKey: "AIzaSyBQPvY432I-_puCmEXX7Evr5LJjAm_kuWs",
   authDomain: "tpmobile-9e980.firebaseapp.com",
@@ -20,6 +12,7 @@ const firebaseConfig = {
   appId: "1:410891395660:web:5a9bae144e88e0cd498ae9",
   measurementId: "G-7VNM0TZ6YG"
 };
+
 // const PORT_URL = 8080
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -31,4 +24,5 @@ const auth = getAuth(app);
 // auth.languageCode = 'vi'
 // connectAuthEmulator(auth, "http://localhost:9099");
 export { auth , db };
+const analytics = getAnalytics(app);
 
