@@ -61,10 +61,3 @@ export const deleteDocController = async(collectionName: Collections , id : stri
       throw new Error(e);
     }
 }
-// export function convertPriceStringToNumber(priceString: string | number): number {
-//   if (typeof priceString === "number") {
-//     return priceString;
-//   }
-//   const data = Number(priceString.trim().replaceAll(",", ""));
-//   return data;
-// }
