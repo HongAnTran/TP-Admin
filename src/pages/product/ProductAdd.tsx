@@ -171,42 +171,22 @@ export default function ProductAdd() {
                     control={control}
                     name="title"
                     type="text"
-                    className="my-3"
                     labelClassName="text-[#272727]"
+                  />
+
+
+                </div>
+
+                <div className=' flex gap-2'>
+                  <SelectCategory
+                    value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
+                      setValue("category.connect.id", id)
+                    }}
                   />
                   <SelectBrand
                     value={watch("brand.connect.id")?.toString() || ""} onChange={(id) => {
                       setValue("brand.connect.id", id)
                     }}
-                  />
-                  {/* <InputController
-
-                    label="Nhà cung cấp"
-                    control={control}
-                    name="vendor"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  /> */}
-                </div>
-                <div className=' flex gap-2'>
-                  <InputController
-
-                    label="barcode"
-                    control={control}
-                    name="barcode"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-                  <InputController
-
-                    label="Mô tả ngắn"
-                    control={control}
-                    name="short_description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
                   />
                 </div>
 
@@ -216,6 +196,17 @@ export default function ProductAdd() {
                     onChange={(value) => { setValue("description_html", value) }}
                     value={watch("description_html") || ""}
                   />
+                </div>
+                <div>
+                  <InputController
+
+                    label="Mô tả ngắn"
+                    control={control}
+                    name="short_description"
+                    type="text"
+                    labelClassName="text-[#272727]"
+                  />
+
                 </div>
                 <div className=' flex gap-2'>
                   <InputController
@@ -242,25 +233,27 @@ export default function ProductAdd() {
               </form>
             </MainCard>
             <MainCard title="Hình ảnh sản phẩm">
-              <div className=' grid grid-cols-2 gap-2'>
+              <div className=' flex flex-col gap-4'>
                 {images.map((image, index) => (
-                  <OutlinedInput
-                    key={index}
-                    fullWidth
-                    type="text"
-                    value={image}
-                    onChange={(e) => handleInputChange(index, e.target.value)}
-                    placeholder={`Link hỉnh ảnh ${index + 1}`}
-                  />
+                  <div className=' flex flex-col gap-2  justify-center items-center'>
+                    {image ? <img src={image} className=' w-[150px] h-[150px]' /> : null}
+
+                    <OutlinedInput
+                      key={index}
+                      fullWidth
+                      type="text"
+                      value={image}
+                      onChange={(e) => handleInputChange(index, e.target.value)}
+                      placeholder={`Link hỉnh ảnh ${index + 1}`}
+                    />
+
+                  </div>
 
                 ))}
               </div>
             </MainCard>
             <MainCard title="Biến thể">
               <OptionsForm onSubmit={(op) => setOptions(op)} />
-
-
-
             </MainCard>
             <MainCard title="Danh sách biến thể">
               <ul className=' mt-3 flex flex-col gap-2'>
@@ -300,13 +293,13 @@ export default function ProductAdd() {
 
         </Grid>
         <Grid sm={3} >
-          <MainCard title="Danh mục" >
+          {/* <MainCard title="Danh mục" >
             <SelectCategory
               value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
                 setValue("category.connect.id", id)
               }}
             />
-          </MainCard>
+          </MainCard> */}
           <MainCard title="Danh mục phụ" >
             <div className=' h-[500px]'>
               <SelectCategorySub

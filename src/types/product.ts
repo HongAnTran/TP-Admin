@@ -197,35 +197,42 @@ type ProductCreateInput = {
   },
   sub_categories?: {
     create: {
-      category: { connect : {id:number}}
+      category: { connect: { id: number } }
     }[],
 
   }
 }
 
 type ProductUpdateInput = {
-  title: string
-  slug: string
+  title?: string
+  slug?: string
   description_html?: string | null
-  vendor?: string | null
   available?: boolean
   status?: number
-  created_at?: Date | string
-  updated_at?: Date | string | null
-  published_at?: Date | string | null
   barcode?: string | null
   short_description?: string | null
-  meta_title?: string | null
-  meta_description?: string | null
-  meta_keywords?: string | null
-  featured_image?: string | null
+  meta_data?: {
+    meta_title?: string | null
+    meta_description?: string | null
+    meta_keywords?: string | null
+  }
+  meta_tags?: object
   price?: number
   compare_at_price?: number
   price_max?: number
   price_min?: number
-  images?: string[]
-  category_id?: number
+
+  brand?: {
+    connect: {
+      id: number | null
+    }
+  }
+  category: {
+    connect: {
+      id: number | null
+    }
+  }
 }
 
 type ProductVariantUpdateInput = Omit<Partial<ProductVariant>, "id">
-export type { Product, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductImage,ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

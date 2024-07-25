@@ -14,14 +14,6 @@ const product: MenuItemChildren = {
         breadcrumbs: true,
         children: [
                 {
-                        id: 'product',
-                        title: 'Tất cả sản phẩm',
-                        type: "item",
-                        url: '/product',
-                        icon: <Inventory2Icon />,
-                        breadcrumbs: true,
-                },
-                {
                         id: 'category',
                         title: 'Danh mục sản phẩm',
                         type: "item",
@@ -29,6 +21,15 @@ const product: MenuItemChildren = {
                         icon: <CategoryIcon />,
                         breadcrumbs: true,
                 },
+                {
+                        id: 'product',
+                        title: 'Tất cả sản phẩm',
+                        type: "item",
+                        url: '/product',
+                        icon: <Inventory2Icon />,
+                        breadcrumbs: true,
+                },
+            
         ]
 
 };

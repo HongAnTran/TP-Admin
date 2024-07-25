@@ -12,12 +12,12 @@ import { useForm } from 'react-hook-form';
 const limit = 10
 
 export default function Product() {
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
 
 
   const [key, setKey] = useState("")
 
-  const { data, isSuccess, error } = ProductsServicesAPI.useList({ limit, page: page, keyword: key })
+  const { data, isSuccess, error, isLoading } = ProductsServicesAPI.useList({ limit, page: page + 1, keyword: key })
 
   const { mutateAsync } = ProductsServicesAPI.useDelete()
 
@@ -29,16 +29,18 @@ export default function Product() {
 
     await mutateAsync(id)
     toast.success(`Xóa thành công`)
-
   }
   const columns: GridColDef[] = [
+    {
+      field: "id", headerName: 'id', width: 100,
+    },
     {
       field: "title", headerName: 'Tên sản phẩm', width: 500, renderCell: (params) => {
         return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
       }
     },
     { field: 'category', headerName: 'Nhóm sản phẩm', width: 200 },
-    { field: 'vendor', headerName: 'Nhà cung cấp', width: 200 },
+    { field: 'brand', headerName: 'Nhà cung cấp', width: 200 },
     {
       field: 'delete', headerName: 'hành động', width: 200, renderCell: (params) => {
         return <Button onClick={() => { deleteProduct(params.row.id) }}><DeleteIcon /></Button>
@@ -53,18 +55,15 @@ export default function Product() {
 
   const rows = data.datas.map(product => ({
     ...product,
-    id: product.id,
-    title: product.title,
     brand: product.brand?.name,
     category: product.category?.title,
-    slug: product.slug,
   }))
 
   return (
     <>
       <div className=' py-2'>
         <div className=' flex justify-between mb-2'>
-          <Typography variant="h1">Danh sách sản phẩm</Typography>
+          <Typography variant="h1">Danh sách sản phẩm ({data.total})</Typography>
           <div className=' flex'>
             <Link to={'add'}>
               <Button variant="contained">Thêm sản phẩm</Button>
@@ -74,13 +73,16 @@ export default function Product() {
         <div>
           <form onSubmit={handleSubmit((data) => {
             setKey(data.key)
-          })}>
-            <InputController control={control} name="key" />
-            <Button type="submit" >Tìm</Button>
+          })}
+            className=' flex gap-4 items-center mb-6'
+          >
+            <InputController control={control} placeholder='Tìm kiếm sản phẩm' name="key" className=' max-w-[500px]' />
+            <Button type="submit" variant="contained" >Tìm</Button>
           </form>
         </div>
         <div style={{ height: 600, width: '100%' }}>
           <DataGrid
+            loading={isLoading}
             rows={rows}
             columns={columns}
             pagination
@@ -91,7 +93,7 @@ export default function Product() {
             })}
             initialState={{
               pagination: {
-                paginationModel: { page: page - 1, pageSize: limit },
+                paginationModel: { page: page, pageSize: limit },
 
               },
 

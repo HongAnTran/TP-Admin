@@ -1,5 +1,5 @@
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI'
-import { FormControl ,Select, SelectChangeEvent } from '@mui/material'
+import { FormControl ,FormLabel,Select, SelectChangeEvent } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem';
 export default function SelectCategory({ value, onChange }: { value: string, onChange: (id: number) => void }) {
   const { data: cates, isSuccess } = CateProductsServicesAPI.useList({}, { placeholderData: [] , staleTime : Infinity })
@@ -13,6 +13,8 @@ export default function SelectCategory({ value, onChange }: { value: string, onC
   }
   return (
     <FormControl fullWidth>
+      <FormLabel       className=" font-bold text-[#6c798f]">Danh mục</FormLabel>
+
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"

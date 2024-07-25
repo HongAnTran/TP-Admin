@@ -13,7 +13,7 @@ export default function SelectBrand({ value, onChange }: { value: string, onChan
   }
   return (
     <FormControl fullWidth>
-      <FormLabel>Thương hiệu</FormLabel>
+      <FormLabel       className=" font-bold text-[#6c798f]">Thương hiệu</FormLabel>
       <Select
       
         labelId="brand"

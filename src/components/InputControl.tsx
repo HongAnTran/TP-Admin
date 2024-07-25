@@ -60,10 +60,11 @@ function InputController<
           <FormLabel required={requied}>
             <Typography
               variant="body2"
+              className=" font-bold text-[#6c798f]"
             >
               {label}
             </Typography >
-            {/* {requied && <span className="  text-error">*</span>} */}
+            {requied && <span className="  text-error">*</span>}
           </FormLabel>
         ) : null}
         <div className="flex-1 relative">

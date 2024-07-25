@@ -44,7 +44,7 @@ export function generateCombinations(options: ProductOption[], index: number = 0
 
 export function createSKU(productTitle: Product["title"], variant: ProductVariantCreateInput) {
   // Bước 1: Tạo mã sản phẩm từ tên sản phẩm
-  const productCode = productTitle.split(' ').map(word => word[0].toUpperCase()).join(''); // "iPad Gen 10 10.9 inch 2022 LTE" -> "IG10192022LTE"
+  const productCode = productTitle[0].toUpperCase() + productTitle[1].toUpperCase() // "iPad Gen 10 10.9 inch 2022 LTE" -> "IG10192022LTE"
 
   const options = [variant.option1, variant.option2, variant.option3].filter(Boolean).map(op => createSlug(op)).join("-")
   const time = new Date().getTime()

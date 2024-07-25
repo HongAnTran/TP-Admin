@@ -15,7 +15,6 @@ export default function SelectCategorySub({ name , control}: { name : any , cont
       return {label : cate.title , value:cate.id}
     })}
   >
-   
   </SelectMultipleControl>
   )
 }

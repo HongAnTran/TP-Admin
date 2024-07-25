@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { Product, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
+import { Product, ProductImage, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Dialog, DialogContent, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
@@ -12,6 +12,8 @@ import { createSlug, fillArrayToLength } from '@/utils/addProduct';
 import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
 import { toast } from 'react-toastify';
 import { convetNumberToPriceVND } from '@/utils';
+import SelectBrand from './components/add/SelectBrand';
+import SelectCategorySub from './components/add/SelectCategorySub';
 
 
 
@@ -32,31 +34,26 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
 
   const { mutateAsync } = ProductsServicesAPI.useUpdate()
   // const [options, setOptions] = useState<ProductOption[]>(product.options)
-  const [variants, setVariants] = useState<ProductVariant[]>(product.variants.sort((a, b) => a.position - b.position))
-  const [images, setImages] = useState<string[]>(fillArrayToLength(product.images, 4, ""))
+  const [variants, setVariants] = useState<ProductVariant[]>(product.variants)
+  const [images, setImages] = useState<ProductImage[]>(fillArrayToLength(product.images, 4, ""))
 
   const [variantEdit, setVariantEdit] = useState<ProductVariant>(product.variants[0])
   const [openEdit, setOpenEdit] = useState(false)
-
-
-
-  useEffect(() => {
-    setVariants(product.variants.sort((a, b) => a.position - b.position))
-  }, [product.variants])
+  const { brand_id, category_id, compare_at_price, description_html, meta_data, slug, status, short_description, title } = product
 
   const { handleSubmit, control, setValue, watch } = useForm<ProductUpdateInput>({
     mode: "onSubmit",
     defaultValues: {
-      title: product.title,
-      vendor: product.vendor,
-      barcode: product.barcode,
-      description_html: product.description_html,
-      featured_image: product.featured_image,
-      short_description: product.short_description,
-      meta_description: product.meta_description,
-      meta_title: product.meta_title,
-      category_id: product.category_id,
-      images: product.images
+      title,
+      brand: { connect: { id: brand_id } },
+      category: { connect: { id: category_id } },
+      compare_at_price,
+      description_html,
+      meta_data,
+      slug,
+      status,
+      short_description,
+
     }
   });
   async function onSubmit(data: ProductUpdateInput) {
@@ -65,8 +62,7 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
         id: product.id,
         data: {
           ...data,
-          slug: createSlug(data.title),
-          images: images.filter(img => img),
+          slug: createSlug(data.title ||""),
         }
       })
       toast.success("Cập nhập thành công")
@@ -85,20 +81,15 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
           ...data,
         }
       })
-
-
-      toast.success("Cập nhập thành công")
       refetch()
-
     } catch (error) {
       toast.error("Cập nhập thất bại")
-
     }
   }
   const handleInputChange = (index: number, value: string) => {
-    const newImages = [...images];
-    newImages[index] = value;
-    setImages(newImages);
+    // const newImages = [...images];
+    // newImages[index] = value;
+    // setImages(newImages);
   };
   function onEditVariant(variant: ProductVariant) {
     setVariantEdit(variant)
@@ -108,7 +99,7 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
   return (
     <div className=' py-2 '>
       <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Sửa {product.title}</Typography>
+        <Typography variant="h2">{product.title}</Typography>
 
       </div>
       <Grid container gap={3} wrap="nowrap" className=' relative'>
@@ -132,38 +123,18 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                  <InputController
 
-                    label="Nhà cung cấp"
-                    control={control}
-                    name="vendor"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
                 </div>
                 <div className=' flex gap-2'>
-                  <InputController
-
-                    label="barcode"
-                    control={control}
-                    name="barcode"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-                  <InputController
-
-                    label="Mô tả ngắn"
-                    control={control}
-                    name="short_description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
+                  <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
+                    setValue("category.connect.id", id)
+                  }} />
+                  <SelectBrand
+                    value={watch("brand.connect.id")?.toString() || ""} onChange={(id) => {
+                      setValue("brand.connect.id", id)
+                    }}
                   />
                 </div>
-
-
                 <div>
                   <Editor
                     onChange={(value) => { setValue("description_html", value) }}
@@ -172,10 +143,20 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
                 </div>
                 <div className=' flex gap-2'>
                   <InputController
+                    label="Mô tả ngắn"
+                    control={control}
+                    name="short_description"
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+                </div>
+                <div className=' flex gap-2'>
+                  <InputController
 
                     label="Tiêu đề meta"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -184,31 +165,35 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
 
                     label="Mô tả meta"
                     control={control}
-                    name="meta_description"
+                    name="meta_data.meta_description"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
 
                 </div>
-                <MainCard title="Hình ảnh sản phẩm">
-                  <div className=' grid grid-cols-2 gap-2'>
-                    {images.map((image, index) => (
-                      <OutlinedInput
-                        key={index}
-                        fullWidth
-                        type="text"
-                        value={image}
-                        onChange={(e) => handleInputChange(index, e.target.value)}
-                        placeholder={`Link hỉnh ảnh ${index + 1}`}
-                      />
-                    ))}
-                  </div>
-                </MainCard>
+             
                 <Button variant="contained" type="submit">Lưu</Button>
               </form>
             </MainCard>
+            <MainCard title="Hình ảnh sản phẩm">
+                  <div className=' grid grid-cols-2 gap-2'>
+                    {images.map((image, index) => (
+                      <div className=' flex flex-col gap-2  justify-center items-center'>
+                        {image ? <img src={image.url} className=' w-[150px] h-[150px]' /> : null}
+                        <OutlinedInput
+                          key={index}
+                          fullWidth
+                          type="text"
+                          value={image.url}
+                          onChange={(e) => handleInputChange(index, e.target.value)}
+                          placeholder={`Link hỉnh ảnh ${index + 1}`}
+                        />
 
+                      </div>
+                    ))}
+                  </div>
+                </MainCard>
             {/* <MainCard title="Biến thể">
               <OptionsForm defaultValue={options} onSubmit={(op) => setOptions(op)} />
 
@@ -260,10 +245,16 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
 
         </Grid>
         <Grid sm={3} className=' sticky'>
-          <MainCard title="Danh mục" >
-            <SelectCategory value={watch("category_id")?.toString() || ""} onChange={(id) => {
-              setValue("category_id", id)
-            }} />
+          <MainCard title="Hiển thị" >
+        
+          </MainCard>
+          <MainCard title="Danh mục phụ" >
+            <div className=' h-[500px]'>
+              {/* <SelectCategorySub
+                name="sub_categories.create"
+                control={control}
+              /> */}
+            </div>
           </MainCard>
         </Grid>
       </Grid>
