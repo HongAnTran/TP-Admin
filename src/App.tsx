@@ -50,7 +50,6 @@ const App = () => {
         />
         <CssBaseline />
         <RouterProvider router={router} />
-
       </ThemeProvider>
     </StyledEngineProvider>
     </QueryClientProvider>
