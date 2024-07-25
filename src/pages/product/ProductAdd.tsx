@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { ProductCreateInput, ProductOption, ProductVariantCreateInput } from '@/types/product';
+import { ProductCreateInput, ProductOption, ProductStatus, ProductVariantCreateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
@@ -26,16 +26,30 @@ export default function ProductAdd() {
   const [variants, setVariants] = useState<ProductVariantCreateInput[]>([])
   const [images, setImages] = useState<string[]>(fillArray(4))
 
+  const initValue: ProductCreateInput = {
+    title: "",
+    slug: "",
+    meta_data: {},
+    available: true,
+    barcode: "",
+    compare_at_price: 0,
+    price: 0,
+    description_html: "",
+    price_max: 0,
+    price_min: 0,
+    short_description: "",
+    status: ProductStatus.SHOW,
+    specifications: {
+      connect: []
+    },
+    sub_categories: {
+      create: []
+    },
+  }
+
   const { handleSubmit, control, reset, setValue, watch } = useForm<ProductCreateInput>({
     mode: "onSubmit",
-    defaultValues: {
-      specifications: {
-        connect: []
-      },
-      sub_categories: {
-        create: []
-      }
-    }
+    defaultValues: initValue
   });
 
   const title = watch("title")
@@ -114,7 +128,7 @@ export default function ProductAdd() {
     }
   }
   function resetValue() {
-    reset()
+    reset(initValue)
     setVariants([])
     setOptions([])
     setImages(["", "", "", ""])
@@ -293,12 +307,13 @@ export default function ProductAdd() {
 
         </Grid>
         <Grid sm={3} >
-          {/* <MainCard title="Danh mục" >
-            <SelectCategory
-              value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-                setValue("category.connect.id", id)
-              }}
-            />
+        {/* <MainCard title="Trạng thái" >
+            
+              <SelectCategorySub
+                name="sub_categories.create"
+                control={control}
+              />
+            
           </MainCard> */}
           <MainCard title="Danh mục phụ" >
             <div className=' h-[500px]'>
