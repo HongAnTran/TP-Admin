@@ -1,5 +1,5 @@
 import { Address } from "@/types/address"
-import { ProductOrder } from "./product"
+// import { ProductOrder } from "./product"
 
 
 
@@ -9,7 +9,7 @@ interface Order {
   token: string
   code: string
   customer_id: number
-  items: ProductOrder[]
+  items: any[]
   total_price: number
   temp_price: number
   ship_price: number
