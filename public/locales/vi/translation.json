@@ -1,0 +1,42 @@
+{
+    "navbar":{
+        "dashboard":"Bảng điều khiển",
+        "analytics":"Phân tích",
+        "tasks":"Công việc",
+        "insights":"Insights",
+        "report" : "Báo cáo",
+        "transaction history":"Lịch sử giao dịch"
+
+
+    },
+    "card":{
+        "total_spending":"Tổng chi tiêu",
+        "total_income":"Tổng thu nhập",
+        "today":"Hôm nay",
+        "this_month":"Tháng này"
+
+        
+    }
+    ,
+    "common":{
+        "edit":"chỉnh sửa",
+        "add":"thêm",
+        "my_wallet":"ví của tôi",
+        "view":"xem",
+        "cash":"tiền mặt",
+        "saving":"tiết kiệm",
+        "save":"lưu"
+    },
+    "validate":{
+        "required":"Vui lòng nhập trường này"
+    },
+    "tool":{
+        "add_transaction":"Thêm giao dịch",
+        "transaction_history":"Lịch sử giao dịch",
+        "expense_report" : "Báo cáo chi tiêu"
+    },
+    "transaction":{
+        "recent_transactions":"Giao dịch gần đây"
+    }
+}
+  
