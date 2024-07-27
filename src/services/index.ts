@@ -20,14 +20,14 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
-  async add<t>(data: Omit<t, "id">): Promise<t> {
+  async add<t>(data: any): Promise<t> {
     try {
       return (await client.post(`${this.url}`, data)).data;
     } catch (error) {
       return Promise.reject(error);
     }
   }
-  async put<t>(id: string | number, data: Partial<t>): Promise<t> {
+  async put<t>(id: string | number, data: any): Promise<t> {
     try {
       return (await client.patch(`${this.url}/${id}`, data)).data;
     } catch (error) {

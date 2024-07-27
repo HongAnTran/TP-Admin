@@ -17,7 +17,7 @@ export interface InputPropsCustom {
   inputProps?: InputProps;
   label?: string;
   placeholder?: string;
-  type?: "text" | "password";
+  type?: "text" | "password" | "checkbox";
   className?: string;
   labelClassName?: string;
   requied?: boolean;
@@ -44,7 +44,7 @@ function InputController<
   defaultValue,
   disabled
 }: InputPropsControl<TFieldValues, TName> & InputPropsCustom) {
-  const { field, fieldState } = useController({ name, control ,rules , defaultValue , disabled});
+  const { field, fieldState } = useController({ name, control, rules, defaultValue, disabled });
   const {
     iconAfter,
     iconPrev,
@@ -81,6 +81,7 @@ function InputController<
               {...field}
               {...props}
               type={type}
+              checked={field.value}
               className={twMerge(
                 "input w-full  border  rounded-md border-gray-400 h-[40px] focus:outline-none px-4 bg-white text-black",
                 iconAfter && "pr-10",

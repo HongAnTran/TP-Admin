@@ -24,23 +24,31 @@ interface Product {
   published_at: string | null
   barcode: string | null
   options: ProductOption[]
-  // tags: ProductTags[] | null
+  sub_categories: ProductCategories[]
   compare_at_price: number
   price: number
   price_min: number
   price_max: number
   // metadata
   images: ProductImage[]
-  categories: ProductCategories[]
   variants: ProductVariant[]
-  specifications: ProductSpecifications[]
   ratings: any
   // meta
   meta_data: {
     meta_title?: string
     meta_description?: string
     meta_keywords?: string
-  }
+  },
+  tags: Tags[],
+  related: number[]
+}
+
+interface Tags {
+  id: number,
+  name: string
+  slug: string
+  description: string | null
+  published: boolean
 }
 interface ProductCategories {
   id: number
@@ -60,6 +68,26 @@ interface ProductImage {
   productVariant: number[]
 }
 
+
+interface ProductImageUpdate {
+  url?: string
+  alt_text?: string | null
+  position?: number
+  is_featured?: boolean
+}
+
+interface ProductImageCreate {
+
+  url?: string
+  alt_text?: string | null
+  position?: number
+  is_featured?: boolean
+  product?: {
+    connect: {
+      id: number
+    }
+  }
+}
 // type ProductList = Pick<Product, "id"|"title" | "slug" |"">
 
 interface ProductVariant {
@@ -75,8 +103,10 @@ interface ProductVariant {
   title: string,
   updated_at: null | string,
   inventory_quantity: number,
-  // image_id: number,
+  image: ProductImage | null,
+  image_id: number | null
   available: boolean,
+  // optionValues : 
 }
 
 
@@ -168,7 +198,9 @@ type ProductCreateInput = {
   price?: number
   compare_at_price?: number
   price_max?: number
-  price_min?: number
+  price_min?: number,
+  related?: number[]
+
   images?: {
     createMany: {
       data: {
@@ -199,7 +231,9 @@ type ProductCreateInput = {
     create: {
       category: { connect: { id: number } }
     }[],
-
+  },
+  tags?: {
+    connect: { id: number }[]
   }
 }
 
@@ -227,12 +261,35 @@ type ProductUpdateInput = {
       id: number | null
     }
   }
-  category: {
+  category?: {
     connect: {
       id: number | null
     }
+  },
+  sub_categories?: {
+    connect: { id: number }[]
   }
 }
 
-type ProductVariantUpdateInput = Omit<Partial<ProductVariant>, "id">
-export type { Product, ProductImage,ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+
+
+type ProductVariantUpdateInput = {
+  barcode?: null | string,
+  compare_at_price?: number,
+  option1?: string,
+  option2?: string,
+  option3?: string,
+  position?: number,
+  price?: number,
+  sku?: string,
+  title?: string,
+  updated_at?: null | string,
+  inventory_quantity?: number,
+  image?: {
+    connect: { id: number }
+  },
+  available?: boolean,
+}
+
+
+export type { Product,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
