@@ -1,4 +1,5 @@
-import { Product, ProductOption, ProductVariantCreateInput } from "@/types/product";
+import { AttributeValue } from "@/types/attribute";
+import { Product, ProductVariantCreateInput } from "@/types/product";
 const vietnameseToUnaccented: { [x: string]: string } = {
   'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'È': 'E', 'É': 'E', 'Ê': 'E', 'Ì': 'I', 'Í': 'I',
   'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ù': 'U', 'Ú': 'U', 'Ý': 'Y', 'à': 'a', 'á': 'a',
@@ -30,13 +31,13 @@ export function createSlug(str: string) {
   // Thay thế khoảng trắng bằng dấu gạch ngang và bỏ các ký tự không phải chữ
   return normalizedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
-export function generateCombinations(options: ProductOption[], index: number = 0, current: string[] = []): string[][] {
+export function generateCombinations(options: Pick<AttributeValue  , "id" | "value">[][], index: number = 0, current: {id:number ,value : string}[] = []): {id:number ,value : string}[][] {
   if (index === options.length) {
     return [current];
   }
 
-  const combinations: string[][] = [];
-  for (const value of options[index].values) {
+  const combinations: {id:number ,value : string}[][] = [];
+  for (const value of options[index]) {
     combinations.push(...generateCombinations(options, index + 1, [...current, value]));
   }
   return combinations;
@@ -53,7 +54,7 @@ export function createSKU(productTitle: Product["title"], variant: ProductVarian
 
   return sku;
 }
-export function generateVariants(options: ProductOption[], productTitle: Product["title"]): ProductVariantCreateInput[] {
+export function generateVariants(options: Pick<AttributeValue  , "id" | "value">[][], productTitle: Product["title"]): ProductVariantCreateInput[] {
   if (!options.length) return []
   const variants: ProductVariantCreateInput[] = [];
   const compareAtPrice = 0;
@@ -67,15 +68,21 @@ export function generateVariants(options: ProductOption[], productTitle: Product
   combinations.forEach((combination, index) => {
     const variant: ProductVariantCreateInput = {
       compare_at_price: compareAtPrice,
-      option1: combination[0] || "",
-      option2: combination[1] || "",
-      option3: combination[2] || "",
+      // option1: combination[0] || "",
+      // option2: combination[1] || "",
+      // option3: combination[2] || "",
+      option1: "",
+      option2: "",
+      option3: "",
       position: index,
       price: price,
-      title: combination.join(" / "),
+      title: combination.map(com=>com.value).join(" / "),
       inventory_quantity: inventoryQuantity,
       available: available,
-      sku: ""
+      sku: "",
+      attribute_values: {
+        connect: combination.map(com=>({id:com.id}))
+      }
     };
 
     variant.sku = createSKU(productTitle, variant)

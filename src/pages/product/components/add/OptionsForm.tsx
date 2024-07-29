@@ -1,14 +1,18 @@
 import { useFieldArray, useForm, FormProvider } from 'react-hook-form';
 import ValuesArray from './ValuesArray';
 import { Button, MenuItem, Select } from '@mui/material';
-import { ProductOption } from '@/types/product';
-import { optionsValue } from '@/constans/options';
+// import { optionsValue } from '@/constans/options';
+import {  Attribute, AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-export default function OptionsForm(
-  { onSubmit, defaultValue }:
-    { defaultValue?: ProductOption[], onSubmit: (options: ProductOption[]) => void }) {
+export default function OptionsForm({ onSubmit, defaultValue , attributes , attributesValue }: { defaultValue?: ProductAttributeCreateInput[], 
+  onSubmit: (options: ProductAttributeCreateInput[]) => void ,
+  attributes : Attribute[],
+  attributesValue : AttributeValue[]
+
+}) {
+
 
   const methods = useForm({
     defaultValues: {
@@ -16,15 +20,13 @@ export default function OptionsForm(
     }
   })
 
+
   const { control, register, handleSubmit, watch } = methods;
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'options',
+    name: "options",
   });
-
-  const values = watch("options")
-console.log(values)
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(data => onSubmit(data.options))}>
@@ -39,13 +41,13 @@ console.log(values)
             // }
             return (
               <li key={item.id} className=' flex gap-2 items-start justify-between'>
-                <Select   {...register(`options.${index}.name`)} placeholder="Name" className="input input-bordered w-full max-w-xs" >
-                  {optionsValue.map(op => {
-                    return (<MenuItem key={op} value={op}>{op}</MenuItem>)
+                <Select   {...register(`options.${index}.attribute.connect.id`)} placeholder="Tên" className="input input-bordered w-full max-w-xs" >
+                  {attributes.map(op => {
+                    return (<MenuItem key={op.id} value={op.id}>{op.name}</MenuItem>)
                   })}
                 </Select>
 
-                <ValuesArray nestIndex={index} name={watch("options")?.[index]?.name} />
+                <ValuesArray attributesValue={attributesValue} nestIndex={index} attributeId={watch("options")?.[index]?.attribute.connect.id} />
                 <Button startIcon={<DeleteIcon />} type="button" onClick={() => remove(index)}>Xóa dòng</Button>
               </li>
             )
@@ -56,7 +58,7 @@ console.log(values)
         <Button
           className=' mr-2'
           startIcon={<AddIcon />}
-          onClick={() => append({ name: '', position: 0, values: [''], product_id: null })}
+          onClick={() => append({ position: 0, attribute: { connect: { id: 0 } }, values: { connect: [] } })}
           variant="contained"
         >
           Thêm Thuộc tính

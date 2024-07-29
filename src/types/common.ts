@@ -1,11 +1,14 @@
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 
 interface Params {
-  skip?: number;
-  take?: number
-  page?: number
-  limit?: number
-  keyword? : string
+  [key:string]: string;
+
+  // skip?: number;
+  // take?: number
+  // page?: number
+  // limit?: number
+  // keyword? : string
+
 }
 interface TestApi {
   id: number;

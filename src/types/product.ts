@@ -1,6 +1,7 @@
 import { CategoryProduct } from "./categoryProduct";
 import { FilterBase } from "./common";
 import { Brand } from "./brand";
+import { ProductAttributeCreateInput } from "./attribute";
 
 type ProductId = number
 enum ProductStatus {
@@ -123,6 +124,9 @@ interface ProductVariantCreateInput {
   updated_at?: string,
   inventory_quantity: number,
   available: boolean,
+  attribute_values: {
+    connect: { id: number }[]
+  }
 }
 
 
@@ -218,12 +222,13 @@ type ProductCreateInput = {
     createMany: {
       data: Partial<ProductVariant>[]
     }
-  }, options?: {
-    createMany: {
-      data: Partial<ProductOption>[]
-    }
   },
-
+  //  options?: {
+  //   createMany: {
+  //     data: Partial<ProductOption>[]
+  //   }
+  // },
+  attributes?: ProductAttributeCreateInput[],
   specifications?: {
     connect: { id: number }[]
   },
@@ -292,4 +297,4 @@ type ProductVariantUpdateInput = {
 }
 
 
-export type { Product,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

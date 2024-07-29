@@ -1,12 +1,12 @@
 // import { AxiosError, AxiosResponse } from "axios";
 import client from "@/api/axios";
-import { Params } from "@/types/common";
+// import { Params } from "@/types/common";
 class ServiceAPI {
   url: string;
   constructor(url: string) {
     this.url = url;
   }
-  async getAll<t>(params?: Params): Promise<t> {
+  async getAll<t>(params?: any): Promise<t> {
     try {
       return (await client.get(this.url, { params })).data;
     } catch (error) {

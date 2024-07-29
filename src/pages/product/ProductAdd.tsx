@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { ProductCreateInput, ProductOption, ProductStatus, ProductVariantCreateInput } from '@/types/product';
+import { ProductCreateInput, ProductStatus, ProductVariantCreateInput } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
@@ -13,16 +13,20 @@ import OptionsForm from './components/add/OptionsForm';
 import { toast } from 'react-toastify';
 import SelectBrand from './components/add/SelectBrand';
 import SelectCategorySub from './components/add/SelectCategorySub';
+import { AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
+import AttributeServicesAPI from '@/services/AttributeServicesAPI';
 
 
 
 
 export default function ProductAdd() {
   const { mutateAsync } = ProductsServicesAPI.useAdd()
+  const { data: attributes, isSuccess } = AttributeServicesAPI.useList()
+  const { data: attributesValue, isSuccess: suc } = AttributeServicesAPI.useListValue()
 
 
 
-  const [options, setOptions] = useState<ProductOption[]>([])
+  const [options, setOptions] = useState<ProductAttributeCreateInput[]>([])
   const [variants, setVariants] = useState<ProductVariantCreateInput[]>([])
   const [images, setImages] = useState<string[]>(fillArray(4))
 
@@ -100,11 +104,7 @@ export default function ProductAdd() {
             })
           }
         },
-        options: {
-          createMany: {
-            data: options.map((option, index) => ({ position: index + 1, name: option.name, values: option.values }))
-          }
-        },
+        attributes: options.map((op, index) => ({ ...op, position: index + 1 })),
         variants: {
           createMany: {
             data: variants
@@ -155,10 +155,14 @@ export default function ProductAdd() {
   };
   useEffect(() => {
     if (title) {
-      const variants = generateVariants(options, title || "")
+      const optionsNew: Pick<AttributeValue, "id" | "value">[][] = options.map(option => {
+        return option.values.connect.map(op => ({ id: op.id, value: attributesValue?.find(attr => attr.id === op.id)?.value || "" }))
+      })
+
+      const variants = generateVariants(optionsNew, title || "")
       setVariants(variants)
     }
-  }, [options, title])
+  }, [attributes, attributesValue, options, title])
 
 
   return (
@@ -267,7 +271,10 @@ export default function ProductAdd() {
               </div>
             </MainCard>
             <MainCard title="Biến thể">
-              <OptionsForm onSubmit={(op) => setOptions(op)} />
+              {isSuccess && suc ? <OptionsForm attributes={attributes} attributesValue={attributesValue} onSubmit={(op) => {
+                setOptions(op)
+              }} /> : null}
+
             </MainCard>
             <MainCard title="Danh sách biến thể">
               <ul className=' mt-3 flex flex-col gap-2'>
@@ -307,7 +314,7 @@ export default function ProductAdd() {
 
         </Grid>
         <Grid sm={3} >
-        {/* <MainCard title="Trạng thái" >
+          {/* <MainCard title="Trạng thái" >
             
               <SelectCategorySub
                 name="sub_categories.create"
