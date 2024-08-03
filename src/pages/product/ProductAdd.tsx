@@ -104,11 +104,11 @@ export default function ProductAdd() {
             })
           }
         },
-        attributes: options.map((op, index) => ({ ...op, position: index + 1 })),
+        attributes: {
+          create: options.map((op, index) => ({ ...op, position: index + 1 }))
+        },
         variants: {
-          createMany: {
-            data: variants
-          }
+          create: variants
         },
         specifications: {
           connect: data.specifications?.connect || []
@@ -163,7 +163,6 @@ export default function ProductAdd() {
       setVariants(variants)
     }
   }, [attributes, attributesValue, options, title])
-
 
   return (
     <div className=' py-2 '>

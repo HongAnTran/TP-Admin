@@ -31,12 +31,12 @@ export function createSlug(str: string) {
   // Thay thế khoảng trắng bằng dấu gạch ngang và bỏ các ký tự không phải chữ
   return normalizedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
-export function generateCombinations(options: Pick<AttributeValue  , "id" | "value">[][], index: number = 0, current: {id:number ,value : string}[] = []): {id:number ,value : string}[][] {
+export function generateCombinations(options: Pick<AttributeValue, "id" | "value">[][], index: number = 0, current: { id: number, value: string }[] = []): { id: number, value: string }[][] {
   if (index === options.length) {
     return [current];
   }
 
-  const combinations: {id:number ,value : string}[][] = [];
+  const combinations: { id: number, value: string }[][] = [];
   for (const value of options[index]) {
     combinations.push(...generateCombinations(options, index + 1, [...current, value]));
   }
@@ -47,14 +47,13 @@ export function createSKU(productTitle: Product["title"], variant: ProductVarian
   // Bước 1: Tạo mã sản phẩm từ tên sản phẩm
   const productCode = productTitle[0].toUpperCase() + productTitle[1].toUpperCase() // "iPad Gen 10 10.9 inch 2022 LTE" -> "IG10192022LTE"
 
-  const options = [variant.option1, variant.option2, variant.option3].filter(Boolean).map(op => createSlug(op)).join("-")
   const time = new Date().getTime()
 
-  const sku = `${productCode}-${options}-${time}`;
+  const sku = `${productCode}${variant.attribute_values.connect.map(va=>va.id).join("")}${time}`;
 
   return sku;
 }
-export function generateVariants(options: Pick<AttributeValue  , "id" | "value">[][], productTitle: Product["title"]): ProductVariantCreateInput[] {
+export function generateVariants(options: Pick<AttributeValue, "id" | "value">[][], productTitle: Product["title"]): ProductVariantCreateInput[] {
   if (!options.length) return []
   const variants: ProductVariantCreateInput[] = [];
   const compareAtPrice = 0;
@@ -68,20 +67,14 @@ export function generateVariants(options: Pick<AttributeValue  , "id" | "value">
   combinations.forEach((combination, index) => {
     const variant: ProductVariantCreateInput = {
       compare_at_price: compareAtPrice,
-      // option1: combination[0] || "",
-      // option2: combination[1] || "",
-      // option3: combination[2] || "",
-      option1: "",
-      option2: "",
-      option3: "",
       position: index,
       price: price,
-      title: combination.map(com=>com.value).join(" / "),
+      title: combination.map(com => com.value).join(" / "),
       inventory_quantity: inventoryQuantity,
       available: available,
       sku: "",
       attribute_values: {
-        connect: combination.map(com=>({id:com.id}))
+        connect: combination.map(com => ({ id: com.id }))
       }
     };
 

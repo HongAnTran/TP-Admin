@@ -114,9 +114,6 @@ interface ProductVariant {
 interface ProductVariantCreateInput {
   barcode?: string,
   compare_at_price: number,
-  option1: string,
-  option2: string,
-  option3: string,
   position: number,
   price: number,
   sku: string,
@@ -219,16 +216,11 @@ type ProductCreateInput = {
     connect: { id: number }
   }
   variants?: {
-    createMany: {
-      data: Partial<ProductVariant>[]
-    }
+    create: Partial<ProductVariant>[]
   },
-  //  options?: {
-  //   createMany: {
-  //     data: Partial<ProductOption>[]
-  //   }
-  // },
-  attributes?: ProductAttributeCreateInput[],
+  attributes?: {
+    create : ProductAttributeCreateInput[]
+  },
   specifications?: {
     connect: { id: number }[]
   },
