@@ -1,7 +1,7 @@
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 
 interface Params {
-  [key:string]: string;
+  [key:string]: string | number;
 
   // skip?: number;
   // take?: number
