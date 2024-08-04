@@ -92,7 +92,7 @@ export default function ProductAdd() {
         slug: createSlug(data.title),
         price,
         compare_at_price,
-
+        barcode : null,
         price_max,
         price_min,
         status: 1,

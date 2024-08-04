@@ -17,7 +17,7 @@ export default function Product() {
 
   const [key, setKey] = useState("")
 
-  const { data, isSuccess, error, isLoading } = ProductsServicesAPI.useList({ limit, page: page + 1, keyword: key })
+  const { data, isSuccess, error, isLoading } = ProductsServicesAPI.useList({ limit, page: page + 1, keyword: key , sortBy : "id" , sortType : "desc" })
 
   const { mutateAsync } = ProductsServicesAPI.useDelete()
 

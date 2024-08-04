@@ -23,7 +23,7 @@ export default function Blog() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.articles.map(product => ({
+  const rows = data.datas.map(product => ({
     ...product,
     id: product.id,
     title: product.title,

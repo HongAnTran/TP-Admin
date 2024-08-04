@@ -20,7 +20,7 @@ interface Article {
 }
 
 interface Articles {
-  articles: Article[]
+  datas: Article[]
   total: number
 }
 
