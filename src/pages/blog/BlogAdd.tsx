@@ -3,12 +3,12 @@ import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Grid, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
-import Editor from '@/components/Editor';
+import Editor from '@/components/editor/Editor';
 import { createSlug } from '@/utils/addProduct';
 import SelectCategory from '../blog/components/add/SelectCategory';
 import { toast } from 'react-toastify';
 import BlogServicesAPI from '@/services/BlogServicesAPI';
-import { ArticleCreateInput } from '@/types/article';
+import { ArticleCreateInput, ArticleStatus } from '@/types/article';
 
 
 
@@ -26,14 +26,15 @@ export default function CategoryAdd() {
       const res = await mutateAsync({
         ...data,
         slug: createSlug(data.title),
-        published: true
+      status : ArticleStatus.SHOW
       })
       toast.error(`Thêm danh mục ${res.title} thành công`)
       reset({
         title: "",
         slug: "",
         description: "",
-        published: true
+        status : ArticleStatus.SHOW
+
       })
     } catch (error) {
       toast.error(JSON.stringify(error))

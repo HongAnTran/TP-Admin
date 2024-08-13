@@ -3,11 +3,12 @@ import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Grid, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
-import Editor from '@/components/Editor';
+import Editor from '@/components/editor/Editor';
 import { createSlug } from '@/utils/addProduct';
 import { CategoryCreateInput } from '@/types/categoryProduct';
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
 import { toast } from 'react-toastify';
+import FileUpload from '@/components/UploadImage';
 
 
 
@@ -86,6 +87,8 @@ export default function CategoryAdd() {
                     value={watch("description") || ""}
                   />
                 </div>
+
+                <FileUpload/>
                 {/* <div className=' flex gap-2'>
                   <InputController
 

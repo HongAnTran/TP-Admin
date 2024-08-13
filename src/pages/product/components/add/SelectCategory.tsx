@@ -22,7 +22,7 @@ export default function SelectCategory({ value, onChange }: { value: string, onC
         label="Danh mục"
         onChange={handleChange}
       >
-        {cates.map(cate => {
+        {cates.datas.map(cate => {
           return (<MenuItem key={cate.id} value={cate.id.toString()}>{cate.title}</MenuItem>)
         })}
       </Select>

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { CategoryArtice, CategoryArticeCreateInput } from "@/types/categoryArtice";
 import { Params } from "react-router-dom";
-import { DataUpdate, OptionsUseQuery } from "@/types/common";
+import { DataUpdate, OptionsUseQuery, ResponseList } from "@/types/common";
 
 
 const URL: string = "/category-article";
@@ -13,7 +13,7 @@ type DataQuery = CategoryArtice;
 
 export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<DataQuery[], Error>(
+    return useQuery<ResponseList<DataQuery>, Error>(
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),

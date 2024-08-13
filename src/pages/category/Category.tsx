@@ -14,7 +14,9 @@ export default function Category() {
 
     {
       field: "title", headerName: 'Tên Danh mục', width: 500, renderCell: (params) => {
-        return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
+        return <Link to={params.row.slug} >
+          <Typography variant="body2" >{params.value}</Typography>
+          </Link>
       }
     },
     {
@@ -24,9 +26,14 @@ export default function Category() {
     },
     {
       field: "published", headerName: 'Trạng thái', width: 100, renderCell: (params) => {
-        return <Checkbox checked={params.value}  />
+        return <Checkbox checked={!!params.value}  />
       }
     },
+    // {
+    //   field: "", headerName: 'Hành động', width: 100, renderCell: (params) => {
+    //     return <TrashIcon />
+    //   }
+    // },
 
   ];
 
@@ -34,7 +41,7 @@ export default function Category() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.map(cate => ({
+  const rows = data.datas.map(cate => ({
     ...cate,
 
 

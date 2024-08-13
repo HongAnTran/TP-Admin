@@ -2,13 +2,6 @@ import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
 
 interface Params {
   [key:string]: string | number;
-
-  // skip?: number;
-  // take?: number
-  // page?: number
-  // limit?: number
-  // keyword? : string
-
 }
 interface TestApi {
   id: number;
@@ -25,13 +18,19 @@ type OptionsUseQuery = Omit<
   "queryKey" | "queryFn"
 >
 
-type Theme = "student_admin_theme" | "teacher_vet_theme";
+
 interface DataUpdate<t> {
   id: string | number;
   data: Partial<t>;
 }
 interface FilterBase {
-  take?: number
-  skip?: number
+  page?: number
+  limit?: number
 }
-export type { Params, OptionsUseQuery, TestApi, Error, Theme, DataUpdate, FilterBase };
+
+interface ResponseList<T> {
+  datas: T[]
+  total: number
+}
+
+export type { Params, OptionsUseQuery, TestApi, Error, DataUpdate, FilterBase , ResponseList };

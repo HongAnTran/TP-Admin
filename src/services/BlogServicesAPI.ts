@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
-import { OptionsUseQuery, Params, Error} from "@/types/common";
+import { OptionsUseQuery, Params, Error, ResponseList} from "@/types/common";
 // import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
-import { Article   , ArticleCreateInput, Articles} from "@/types/article";
+import { Article   , ArticleCreateInput,} from "@/types/article";
 
 const URL: string = "/articles";
 const QUERY_KEY = URL;
@@ -12,7 +12,7 @@ type DataQuery = Article;
 
 export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<Articles, Error>(
+    return useQuery<ResponseList<DataQuery>, Error>(
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),

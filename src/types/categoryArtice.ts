@@ -16,11 +16,16 @@ type CategoryArticeCreateInput = {
   title: string
   description?: string | null
   image?: string | null
-  parent_id?: number | null
   slug: string
-  status: number
+  published?: boolean
+  meta_data?: {
+    meta_title?: string | null
+    meta_description?: string | null
+    meta_keywords?: string | null
+  }
+
 }
-export type { CategoryArtice  , CategoryArticeCreateInput}
+export type { CategoryArtice, CategoryArticeCreateInput }
 export {
   CategoryArticeStatus
 }

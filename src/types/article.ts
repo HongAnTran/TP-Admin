@@ -7,7 +7,9 @@ interface Article {
   id: number; // ID của bài viết
   title: string; // Tiêu đề của bài viết
   slug: string;
-  content: string; // Nội dung của bài viết
+  status: number
+
+  content: string | null; // Nội dung của bài viết
   author_id: number; // ID của tác giả (khóa ngoại)
   category_id: number; // ID của danh mục bài viết (khóa ngoại)
   created_at: string; // Ngày và giờ tạo bài viết
@@ -15,27 +17,32 @@ interface Article {
   published_date: string;
   description: string;
   thumnal_url: string
-  published: boolean
 
 }
 
-interface Articles {
-  datas: Article[]
-  total: number
-}
 
 type ArticleCreateInput = {
 
   title: string; // Tiêu đề của bài viết
   slug: string;
+  status: ArticleStatus
   content?: string; // Nội dung của bài viết
-  author_id?: number; // ID của tác giả (khóa ngoại)
-  category_id?: number; // ID của danh mục bài viết (khóa ngoại)
   description?: string;
   thumnal_url?: string
-  published?: boolean
+  meta_data?: {
+    meta_title?: string | null
+    meta_description?: string | null
+    meta_keywords?: string | null
+  }
+
+  category?: {
+    connect: { id: number }
+  };
+  author?: {
+    connect: { id: number }
+  };
 }
 
 
-export type { Article, ArticleCreateInput, Articles }
+export type { Article, ArticleCreateInput }
 export { ArticleStatus }

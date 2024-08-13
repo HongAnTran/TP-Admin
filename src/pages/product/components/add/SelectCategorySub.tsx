@@ -11,7 +11,7 @@ export default function SelectCategorySub({ name , control}: { name : any , cont
     <SelectMultipleControl
     name={name}
     control={control}
-    options={ cates.map(cate => {
+    options={ cates.datas.map(cate => {
       return {label : cate.title , value:cate.id}
     })}
   >

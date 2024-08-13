@@ -3,7 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { CategoryProduct } from "@/types/categoryProduct";
 import { Params } from "react-router-dom";
-import { DataUpdate, OptionsUseQuery } from "@/types/common";
+import { DataUpdate, OptionsUseQuery, ResponseList } from "@/types/common";
 
 
 const URL: string = "/category-product";
@@ -14,7 +14,7 @@ type DataQuery = CategoryProduct;
 
 export default {
   useList: (params?: Params, options?: OptionsUseQuery) => {
-    return useQuery<DataQuery[], Error>(
+    return useQuery<ResponseList<DataQuery>, Error>(
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),

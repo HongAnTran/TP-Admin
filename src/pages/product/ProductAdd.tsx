@@ -5,7 +5,7 @@ import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
-import Editor from '@/components/Editor';
+import Editor from '@/components/editor/Editor';
 import SelectCategory from './components/add/SelectCategory';
 import { createSlug, fillArray, generateVariants } from '@/utils/addProduct';
 import SelectSpecifications from './components/add/SelectSpecifications';

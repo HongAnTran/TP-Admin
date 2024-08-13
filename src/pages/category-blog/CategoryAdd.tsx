@@ -3,9 +3,9 @@ import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Grid, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
-import Editor from '@/components/Editor';
+import Editor from '@/components/editor/Editor';
 import { createSlug } from '@/utils/addProduct';
-import SelectCategory from '../product/components/add/SelectCategory';
+// import SelectCategory from '../product/components/add/SelectCategory';
 import { toast } from 'react-toastify';
 import CateBlogServicesAPI from '@/services/CateBlogServicesAPI';
 import { CategoryArticeCreateInput } from '@/types/categoryArtice';
@@ -26,16 +26,12 @@ export default function CategoryAdd() {
       const res = await mutateAsync({
         ...data,
         slug: createSlug(data.title),
-        status: 1
+        published : true,
       })
       toast.error(`Thêm danh mục ${res.title} thành công`)
       reset({
         title: "",
         slug: "",
-        parent_id: null,
-        description: "",
-        image: "",
-        status: 1
       })
     } catch (error) {
       toast.error(JSON.stringify(error))
@@ -88,12 +84,12 @@ export default function CategoryAdd() {
                     value={watch("description") || ""}
                   />
                 </div>
-                {/* <div className=' flex gap-2'>
+                <div className=' flex gap-2'>
                   <InputController
 
                     label="meta_description"
                     control={control}
-                    name="meta_description"
+                    name="meta_data.meta_description"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -102,12 +98,22 @@ export default function CategoryAdd() {
 
                     label="meta_title"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                </div> */}
+                     
+                  <InputController
+
+                    label="meta_keywords"
+                    control={control}
+                    name='meta_data.meta_keywords'
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+                </div>
 
                 <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>
               </form>
@@ -118,11 +124,11 @@ export default function CategoryAdd() {
 
         </Grid>
         <Grid sm={3}>
-          <MainCard title="Danh mục cha">
+          {/* <MainCard title="Danh mục cha">
             <SelectCategory value={watch("parent_id")?.toString() || ""} onChange={(id) => {
               setValue("parent_id", id)
             }} />
-          </MainCard>
+          </MainCard> */}
         </Grid>
 
       </Grid>
