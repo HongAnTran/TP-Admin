@@ -45,7 +45,7 @@ export default function CategoryAdd() {
 
       </div>
       <Grid container gap={3} wrap="nowrap">
-        <Grid sm={9}>
+        <Grid sm={12}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -123,13 +123,7 @@ export default function CategoryAdd() {
           </div>
 
         </Grid>
-        <Grid sm={3}>
-          {/* <MainCard title="Danh mục cha">
-            <SelectCategory value={watch("parent_id")?.toString() || ""} onChange={(id) => {
-              setValue("parent_id", id)
-            }} />
-          </MainCard> */}
-        </Grid>
+      
 
       </Grid>
     </div>

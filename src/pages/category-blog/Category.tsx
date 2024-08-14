@@ -25,7 +25,7 @@ export default function Category() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.map(cate => ({
+  const rows = data.datas.map(cate => ({
     ...cate,
     id: cate.id,
     title: cate.title,

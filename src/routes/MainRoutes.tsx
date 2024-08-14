@@ -12,6 +12,7 @@ const ProductAdd = Loadable(lazy(() => import('@/pages/product/ProductAdd')));
 const ProductEdit = Loadable(lazy(() => import('@/pages/product/ProductEdit')));
 const Category = Loadable(lazy(() => import('@/pages/category/Category')));
 const CategoryAdd = Loadable(lazy(() => import('@/pages/category/CategoryAdd')));
+const CategoryEdit = Loadable(lazy(() => import('@/pages/category/CategoryEdit')));
 
 const CategoryBlog = Loadable(lazy(() => import('@/pages/category-blog/Category')));
 const CategoryBlogAdd = Loadable(lazy(() => import('@/pages/category-blog/CategoryAdd')));
@@ -48,6 +49,10 @@ const MainRoutes: RouteObject = {
         {
             path: "/category/add",
             element: <CategoryAdd />
+        },
+        {
+            path: "/category/:id",
+            element: <CategoryEdit />
         },
         {
             path: '/category',

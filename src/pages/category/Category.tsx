@@ -6,17 +6,17 @@ import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
 
 export default function Category() {
 
-  const { data, isSuccess, error } = CateProductsServicesAPI.useList()
+  const { data, isSuccess, error } = CateProductsServicesAPI.useList({ sortBy: "id", sortType: "desc" })
 
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'id', width:70 },
+    { field: 'id', headerName: 'id', width: 70 },
 
     {
       field: "title", headerName: 'Tên Danh mục', width: 500, renderCell: (params) => {
         return <Link to={params.row.slug} >
           <Typography variant="body2" >{params.value}</Typography>
-          </Link>
+        </Link>
       }
     },
     {
@@ -26,7 +26,7 @@ export default function Category() {
     },
     {
       field: "published", headerName: 'Trạng thái', width: 100, renderCell: (params) => {
-        return <Checkbox checked={!!params.value}  />
+        return <Checkbox checked={!!params.value} />
       }
     },
     // {
@@ -41,11 +41,8 @@ export default function Category() {
     return <p>{error?.message}</p>
   }
 
-  const rows = data.datas.map(cate => ({
-    ...cate,
+  const rows = data.datas
 
-
-  }))
 
   return (
     <div className=' py-2'>

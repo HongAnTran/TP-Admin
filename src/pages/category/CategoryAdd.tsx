@@ -34,7 +34,8 @@ export default function CategoryAdd() {
         slug: "",
         description: "",
         image: "",
-        published: true
+        published: true,
+        meta_data: undefined
       })
     } catch (error) {
       toast.error(JSON.stringify(error))
@@ -48,7 +49,7 @@ export default function CategoryAdd() {
 
       </div>
       <Grid container gap={3} wrap="nowrap">
-        <Grid sm={9}>
+        <Grid sm={12}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -88,13 +89,12 @@ export default function CategoryAdd() {
                   />
                 </div>
 
-                <FileUpload/>
-                {/* <div className=' flex gap-2'>
+                <div className=' flex gap-2'>
                   <InputController
 
                     label="meta_description"
                     control={control}
-                    name="meta_description"
+                    name="meta_data.meta_description"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -103,12 +103,21 @@ export default function CategoryAdd() {
 
                     label="meta_title"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                </div> */}
+                  <InputController
+
+                    label="meta_keywords"
+                    control={control}
+                    name="meta_data.meta_keywords"
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+                </div>
 
                 <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>
               </form>

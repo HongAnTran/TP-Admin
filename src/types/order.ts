@@ -38,4 +38,17 @@ interface Order {
 }
 
 
+<<<<<<< HEAD
+=======
+
+
+export enum OrderStatus {
+  PENDING, // Đơn hàng đang chờ xử lý
+  PROCESSING, // Đơn hàng đang được xử lý
+  SHIPPED, // Đơn hàng đã được gửi đi
+  DELIVERED, // Đơn hàng đã được giao thành công
+  CANCELLED, // Đơn hàng đã bị hủy
+  FAILED, // Đơn hàng không thành công
+}
+>>>>>>> 457c3bb9f25927c0ec6167842c53444d80f64461
 export type { Order }

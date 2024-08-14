@@ -1,4 +1,4 @@
-import { CategoryCreateInput } from '@/types/categoryProduct';
+import { CategoryCreateInput, CategoryUpdateInput } from '@/types/categoryProduct';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { CategoryProduct } from "@/types/categoryProduct";
@@ -44,9 +44,9 @@ export default {
   },
   useUpdate: () => {
     const queryClient = useQueryClient();
-    return useMutation<DataQuery, Error, DataUpdate<DataQuery>>(
+    return useMutation<DataQuery, Error, DataUpdate<CategoryUpdateInput>>(
       {
-        mutationFn: (data) => serviceAPI.put(data.id, data.data),
+        mutationFn: (data) => serviceAPI.patch(data.id, data.data),
         onSuccess: (data) =>
           queryClient.invalidateQueries({ queryKey: [...QUERY_KEY, data.id] }),
       }

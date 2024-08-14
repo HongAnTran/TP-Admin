@@ -1,54 +1,61 @@
 
 import MainCard from '@/ui-component/cards/MainCard'
-import { Button, Grid, Typography } from '@mui/material'
+import { Button, Grid, Switch, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
 import { createSlug } from '@/utils/addProduct';
-import SelectCategory from '../blog/components/add/SelectCategory';
+import { CategoryProduct, CategoryUpdateInput } from '@/types/categoryProduct';
+import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
 import { toast } from 'react-toastify';
-import BlogServicesAPI from '@/services/BlogServicesAPI';
-import { ArticleCreateInput, ArticleStatus } from '@/types/article';
+import { useParams } from 'react-router-dom';
 
 
 
-export default function CategoryAdd() {
-  const { mutateAsync } = BlogServicesAPI.useAdd()
+export default function CategorCategoryEdityAdd() {
+  const { id } = useParams();
+  const { data, isSuccess } = CateProductsServicesAPI.useDetail(id || "")
+
+  if (!isSuccess) return <></>
+
+  return (
+    <EditForm cate={data} />
+  )
 
 
-  const { handleSubmit, control, reset, setValue, watch } = useForm<ArticleCreateInput>({
+
+}
+
+
+function EditForm({ cate }: { cate: CategoryProduct }) {
+  const { mutateAsync } = CateProductsServicesAPI.useUpdate()
+
+  const { handleSubmit, control, reset, setValue, watch } = useForm<CategoryUpdateInput>({
     mode: "onSubmit",
+    defaultValues: cate
   });
 
-  async function onSubmit(data: ArticleCreateInput) {
+  async function onSubmit(data: CategoryUpdateInput) {
 
     try {
       const res = await mutateAsync({
-        ...data,
-        slug: createSlug(data.title),
-      status : ArticleStatus.SHOW
+        id: cate.id,
+        data: data
       })
-      toast.error(`Thêm danh mục ${res.title} thành công`)
-      reset({
-        title: "",
-        slug: "",
-        description: "",
-        status : ArticleStatus.SHOW
-
-      })
+      toast.error(`Sửa danh mục ${res.title} thành công`)
+      reset(res)
     } catch (error) {
       toast.error(JSON.stringify(error))
     }
   }
-
   return (
     <div className=' py-2'>
       <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Thêm Danh mục mới</Typography>
+        <Typography variant="h1">Sửa {cate.title}</Typography>
 
       </div>
       <Grid container gap={3} wrap="nowrap">
-        <Grid sm={9}>
+        <Grid sm={12}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -59,7 +66,7 @@ export default function CategoryAdd() {
                 <div className=' flex gap-2'>
                   <InputController
 
-                    label="Tên Bài viết"
+                    label="Tên Danh mục"
                     control={control}
                     name="title"
                     type="text"
@@ -67,22 +74,31 @@ export default function CategoryAdd() {
                     labelClassName="text-[#272727]"
                   />
 
+                  <InputController
+
+                    label="Ẩn/Hiện"
+                    control={control}
+                    name="published"
+                    type="checkbox"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
                 </div>
                 <div className=' flex gap-2'>
                   <InputController
 
                     label="Ảnh đại diện"
                     control={control}
-                    name="thumnal_url"
+                    name="image"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
                   <InputController
 
-                    label="Mô tả ngắn"
+                    label="slug"
                     control={control}
-                    name="description"
+                    name="slug"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -91,17 +107,19 @@ export default function CategoryAdd() {
 
 
                 <div>
+                  <p className=' mb-2  font-bold '>Mô tả</p>
                   <Editor
-                    onChange={(value) => { setValue("content", value) }}
-                    value={watch("content") || ""}
+                    onChange={(value) => { setValue("description", value) }}
+                    value={watch("description") || ""}
                   />
                 </div>
-                {/* <div className=' flex gap-2'>
+
+                <div className=' flex gap-2'>
                   <InputController
 
                     label="meta_description"
                     control={control}
-                    name="meta_description"
+                    name="meta_data.meta_description"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
@@ -110,12 +128,21 @@ export default function CategoryAdd() {
 
                     label="meta_title"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                </div> */}
+                  <InputController
+
+                    label="meta_keywords"
+                    control={control}
+                    name="meta_data.meta_keywords"
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+                </div>
 
                 <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>
               </form>
@@ -125,14 +152,6 @@ export default function CategoryAdd() {
           </div>
 
         </Grid>
-        <Grid sm={3}>
-          <MainCard title="Chọn">
-            <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-              setValue("category.connect.id", id)
-            }} />
-          </MainCard>
-        </Grid>
-
       </Grid>
     </div>
   )
