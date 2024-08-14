@@ -9,7 +9,7 @@ class UploadAdapter {
     this.loader = loader;
   }
 
-  upload(): Promise<{ default: string }> {
+  async upload(): Promise<{ default: string }> {
     return this.loader.file
       .then((file: File) => new Promise((resolve, reject) => {
         const formData = new FormData();

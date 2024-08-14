@@ -28,8 +28,10 @@ export function createSlug(str: string) {
   const cleanedStr = unaccentedStr.replace(/[^\w\s]/g, '').trim();
   // Thay thế nhiều khoảng trắng liên tiếp bằng một khoảng trắng
   const normalizedStr = cleanedStr.replace(/\s+/g, ' ');
+
+  const replacedDotStr = normalizedStr.replace(/\./g, '-');
   // Thay thế khoảng trắng bằng dấu gạch ngang và bỏ các ký tự không phải chữ
-  return normalizedStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+  return replacedDotStr.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 }
 export function generateCombinations(options: Pick<AttributeValue, "id" | "value">[][], index: number = 0, current: { id: number, value: string }[] = []): { id: number, value: string }[][] {
   if (index === options.length) {
@@ -53,6 +55,8 @@ export function createSKU(productTitle: Product["title"], variant: ProductVarian
 
   return sku;
 }
+
+
 export function generateVariants(options: Pick<AttributeValue, "id" | "value">[][], productTitle: Product["title"]): ProductVariantCreateInput[] {
   if (!options.length) return []
   const variants: ProductVariantCreateInput[] = [];
