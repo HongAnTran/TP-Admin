@@ -16,10 +16,7 @@ export default function SelectSpecifications({ value, onChange }: { value: numbe
   return (
     <>
       <div>
-      
-
         <Button onClick={() => setOpen(true)} variant="contained" className=' mr-6'>Thêm thông số</Button>
-
       </div>
 
       <Dialog open={openNew} onClose={() => setOpenNew(false)} >

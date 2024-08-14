@@ -15,7 +15,7 @@ export interface Option {
   label: string;
   value: ValueOptionType;
 }
-export interface SelectPropsCustom {
+ interface SelectPropsCustom {
   options: Option[];
   mutiple?: boolean;
   label?: string;
@@ -26,10 +26,11 @@ export interface SelectPropsCustom {
   labelClassName?: string;
   iconClassName?: string;
 }
-export type SelectPropsControl<
-  TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
-> = UseControllerProps<TFieldValues, TName>;
+ type SelectPropsControl<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> = UseControllerProps<TFieldValues, TName>;
+
+export type SelectControllerProps<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>> = SelectPropsControl<TFieldValues, TName> & SelectPropsCustom
+
+
 function SelectController<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
@@ -44,7 +45,7 @@ function SelectController<
   selectClassName,
   optionClassName,
   mutiple,
-}: SelectPropsControl<TFieldValues, TName> & SelectPropsCustom) {
+}: SelectControllerProps<TFieldValues, TName>) {
   const { field, fieldState } = useController({ name, control });
   const [open, setOpen] = useState(false);
 
@@ -74,7 +75,7 @@ function SelectController<
           <label>
             <Typography
               variant="h6"
-              className={`font-medium ${labelClassName}`}
+              className={`font-medium text-[#272727] ${labelClassName}`}
             >
               {label}
             </Typography>
@@ -98,23 +99,23 @@ function SelectController<
                   <div className=" flex gap-1">
                     {field.value.length
                       ? field.value.map(
-                          (item: ValueOptionType, index: number) => {
-                            return (
-                              <div
-                                key={index}
-                                className=" border border-primary px-2 h-full rounded "
+                        (item: ValueOptionType, index: number) => {
+                          return (
+                            <div
+                              key={index}
+                              className=" border border-primary px-2 h-full rounded "
+                            >
+                              <Typography
+                                variant="body2"
                               >
-                                <Typography
-                                    variant="body2"
-                                >
-                                  {
-                                    options.find((op) => op.value === item)?.label
-                                  }
-                                </Typography>
-                              </div>
-                            );
-                          }
-                        )
+                                {
+                                  options.find((op) => op.value === item)?.label
+                                }
+                              </Typography>
+                            </div>
+                          );
+                        }
+                      )
                       : null}
                   </div>
                 ) : (
@@ -149,7 +150,7 @@ function SelectController<
                     )}
                     onClick={() => handlerChange(option.value)}
                   >
-                    <Typography  className="  text-inherit">
+                    <Typography className="  text-inherit">
                       {option.label}
                     </Typography>
                   </li>

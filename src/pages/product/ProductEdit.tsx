@@ -2,20 +2,22 @@ import { useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import { Product, ProductImage, ProductUpdateInput, ProductVariant } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
-import { Button, Chip, Dialog, DialogContent, Grid, Input, Typography } from '@mui/material'
+import { Button,  Dialog, DialogContent, Grid, Input, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
-import SelectCategory from './components/add/SelectCategory';
+import SelectCategory from './components/SelectCategory';
+// import SelectCategorySub from './components/SelectCategorySub';
 import { useParams } from 'react-router-dom';
 import { createSlug, fillArrayToLength } from '@/utils/addProduct';
 import { toast } from 'react-toastify';
 import { convetNumberToPriceVND } from '@/utils';
-import SelectBrand from './components/add/SelectBrand';
+import SelectBrand from './components/SelectBrand';
 import FormEditVariant from './components/edit/FormEditVariant';
 import FormEditImage from './components/edit/FormEditImage';
 import AddIcon from '@mui/icons-material/Add';
 import FormAddImage from './components/edit/FormAddImage';
+import FormEditAttributes from './components/edit/FormEditAttributes';
 
 
 export default function ProductEdit() {
@@ -44,7 +46,7 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
   const [openAddImage, setOpenAddImage] = useState(false)
   const [imageEdit, setImageEdit] = useState<ProductImage | null>(null)
 
-  const { brand_id, category_id, compare_at_price, description_html, meta_data, slug, status, short_description, title } = product
+  const { brand_id, category_id, description_html, meta_data, slug, status, short_description, title } = product
 
   const { handleSubmit, control, setValue, watch } = useForm<ProductUpdateInput>({
     mode: "onSubmit",
@@ -52,10 +54,9 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
       title,
       brand: { connect: { id: brand_id } },
       category: { connect: { id: category_id } },
-
-      compare_at_price,
+      // sub_categories: { set: sub_categories.map(item => item.category.id) },
       description_html,
-      meta_data,
+      meta_data: meta_data ? meta_data : undefined,
       slug,
       status,
       short_description,
@@ -63,10 +64,13 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
   });
   async function onSubmit(data: ProductUpdateInput) {
     try {
+      // const subIds = data.sub_categories?.set as unknown as number[]
+
       await mutateAsync({
         id: product.id,
         data: {
           ...data,
+          // sub_categories: { set: subIds.map((id: number) => ({ category_id: id })) || [] },
           slug: createSlug(data.title || ""),
         }
       })
@@ -130,15 +134,24 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
                   />
 
                 </div>
-                <div className=' flex gap-2'>
-                  <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-                    setValue("category.connect.id", id)
-                  }} />
-                  <SelectBrand
-                    value={watch("brand.connect.id")?.toString() || ""} onChange={(id) => {
-                      setValue("brand.connect.id", id)
-                    }}
+                <div className='  grid grid-cols-3 gap-2'>
+                  <SelectCategory
+                    label='Danh mục'
+                    control={control}
+                    name="category.connect.id"
                   />
+
+                  <SelectBrand
+                    label='Thương hiệu'
+
+                    control={control}
+                    name="brand.connect.id"
+                  />
+                  {/* <SelectCategorySub
+                    label='Danh mục phụ'
+                    name="sub_categories.set"
+                    control={control} /> */}
+
                 </div>
                 <div>
                   <Editor
@@ -201,36 +214,24 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
               </div>
             </MainCard>
             <MainCard title="Biến thể">
-              {/* <OptionsForm defaultValue={options} onSubmit={(op) => setOptions(op)} /> */}
-
-
-
+              <FormEditAttributes product={product} />
             </MainCard>
             <MainCard title="Danh sách biến thể">
               <ul className=' mt-3 flex flex-col gap-2'>
                 {product.variants.map(variant => (
                   <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
-                    <Chip color="primary" label={variant.title} />
+                    <div>
+                      <Typography variant="body2"  color="blueviolet" fontWeight="600" >{variant.title}</Typography>
+                      <Typography variant="body1" >sku: {variant.sku}</Typography>
+                    </div>
                     <div className=' flex items-center  gap-2'>
                       <span>Giá</span>
                       <Input
                         className=' font-bold text-base'
-
-
                         value={convetNumberToPriceVND(variant.price)}
 
                         placeholder="Price"
                         disabled
-                      />
-                    </div>
-                    <div className=' flex items-center  gap-2'>
-                      <span>Giá so sánh</span>
-
-                      <Input
-                        disabled
-                        className=' font-bold text-base'
-                        value={convetNumberToPriceVND(variant.compare_at_price)}
-                        placeholder="Giá so sánh"
                       />
                     </div>
                     <Button onClick={() => {
@@ -243,9 +244,7 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
           </div>
 
         </Grid>
-        <Grid sm={3} className=' sticky'>
-          <MainCard title="Hiển thị" >
-          </MainCard>
+        <Grid sm={3}>
         </Grid>
       </Grid>
 

@@ -6,13 +6,13 @@ import { Button, Chip, Grid, Input, OutlinedInput, Typography } from '@mui/mater
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
-import SelectCategory from './components/add/SelectCategory';
+import SelectCategory from './components/SelectCategory';
 import { createSlug, fillArray, generateVariants } from '@/utils/addProduct';
-import SelectSpecifications from './components/add/SelectSpecifications';
-import OptionsForm from './components/add/OptionsForm';
+import SelectSpecifications from './components/SelectSpecifications';
+import OptionsForm from './components/OptionsForm';
 import { toast } from 'react-toastify';
-import SelectBrand from './components/add/SelectBrand';
-import SelectCategorySub from './components/add/SelectCategorySub';
+import SelectBrand from './components/SelectBrand';
+import SelectCategorySub from './components/SelectCategorySub';
 import { AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
 import AttributeServicesAPI from '@/services/AttributeServicesAPI';
 
@@ -92,11 +92,10 @@ export default function ProductAdd() {
         slug: createSlug(data.title),
         price,
         compare_at_price,
-        barcode : null,
+        barcode: null,
         price_max,
         price_min,
         status: 1,
-
         images: {
           createMany: {
             data: images.filter(img => img).map((img, index) => {
@@ -171,7 +170,7 @@ export default function ProductAdd() {
 
       </div>
       <Grid container gap={3} wrap="nowrap" className=' relative'>
-        <Grid sm={9}>
+        <Grid sm={12}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -194,16 +193,26 @@ export default function ProductAdd() {
 
                 </div>
 
-                <div className=' flex gap-2'>
+                <div className=' grid  grid-cols-3 gap-4'>
                   <SelectCategory
-                    value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-                      setValue("category.connect.id", id)
-                    }}
+                  label='Danh mục'
+
+                    control={control}
+                    name="category.connect.id"
+
                   />
+              
                   <SelectBrand
-                    value={watch("brand.connect.id")?.toString() || ""} onChange={(id) => {
-                      setValue("brand.connect.id", id)
-                    }}
+                  label='Thương hiệu'
+
+                    control={control}
+                    name="brand.connect.id"
+                  />
+                      <SelectCategorySub
+                  label='Danh mục phụ'
+
+                    name="sub_categories.create"
+                    control={control}
                   />
                 </div>
 
@@ -311,24 +320,6 @@ export default function ProductAdd() {
             </MainCard>
           </div>
 
-        </Grid>
-        <Grid sm={3} >
-          {/* <MainCard title="Trạng thái" >
-            
-              <SelectCategorySub
-                name="sub_categories.create"
-                control={control}
-              />
-            
-          </MainCard> */}
-          <MainCard title="Danh mục phụ" >
-            <div className=' h-[500px]'>
-              <SelectCategorySub
-                name="sub_categories.create"
-                control={control}
-              />
-            </div>
-          </MainCard>
         </Grid>
       </Grid>
     </div>

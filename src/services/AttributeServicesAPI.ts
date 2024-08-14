@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { OptionsUseQuery, Params, Error, DataUpdate } from "@/types/common";
 import { ProductSpecificationsCreateInput } from "@/types/productSpecifications";
-import { Attribute ,AttributeValue } from "@/types/attribute";
+import { Attribute, AttributeValue } from "@/types/attribute";
 
 const URL: string = "/attributes";
 const URL_Value: string = "/attribute-values";
@@ -18,13 +18,17 @@ export default {
       {
         queryKey: [QUERY_KEY],
         queryFn: () => serviceAPI.getAll(params),
+        staleTime: Infinity,
         ...options
       }
     );
   },
-  useListValue: (params?: {attribute_id : number}, options?: OptionsUseQuery) => {
+  useListValue: (params?: { attribute_id: number }, options?: OptionsUseQuery) => {
     return useQuery<AttributeValue[], Error>(
-      { queryKey: [URL_Value], queryFn: () => serviceAPIValue.getAll(params), ...options }
+      {
+        queryKey: [URL_Value], queryFn: () => serviceAPIValue.getAll(params),
+        staleTime: Infinity, ...options
+      }
     );
   },
 

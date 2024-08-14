@@ -2,7 +2,7 @@
 import { useController, FieldValues, FieldPath, UseControllerProps } from "react-hook-form";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
-
+import CheckIcon from '@mui/icons-material/Check';
 
 export type PropsController<
   TFieldValues extends FieldValues,
@@ -61,7 +61,6 @@ function SelectMultipleControl<
     field.onChange(newData);
     return;
   }
-
 
 
  
@@ -133,7 +132,7 @@ function SelectMultipleControl<
             </div>
             <ul
               tabIndex={0}
-              className={`bg-white border border-gray-900 rounded-b shadow overflow-hidden w-full flex flex-col gap-3 mt-[-1px] absolute z-10 top-ful left-0 transition-all duration-500 overflow-y-scroll scrollbarCustomer p-3 ${
+              className={`bg-white border  border-gray-900 rounded-b shadow overflow-hidden w-full flex flex-col gap-3 mt-[-1px] absolute z-[2000] top-ful left-0 transition-all duration-500 overflow-y-scroll scrollbarCustomer p-3 ${
                 open ? `opacity-100 max-h-[900px] ` : "opacity-0 max-h-0"
               }`}
             >
@@ -161,7 +160,7 @@ function SelectMultipleControl<
                               : "border-gray-900"
                           } `}
                         >
-                          {field.value.includes(option.value) && <span>v</span>}
+                          {field.value.includes(option.value) && <span><CheckIcon/></span>}
                         </span>
                         <span className="text-inherit">{option.label}</span>
                       </li>

@@ -1,7 +1,7 @@
 import { CategoryProduct } from "./categoryProduct";
 import { FilterBase } from "./common";
 import { Brand } from "./brand";
-import { ProductAttributeCreateInput } from "./attribute";
+import { Attribute, AttributeValue, ProductAttributeCreateInput } from "./attribute";
 
 type ProductId = number
 enum ProductStatus {
@@ -12,36 +12,41 @@ interface Product {
   id: ProductId;
   title: string;
   slug: string
-  category_id: number
-  category: CategoryProduct
   description_html: string | null
-  brand: Brand | null
   brand_id: number | null
-  short_description: string | null
   available: boolean
   status: ProductStatus,
   created_at: string
   updated_at: string | null
   published_at: string | null
   barcode: string | null
-  options: ProductOption[]
-  sub_categories: ProductCategories[]
-  compare_at_price: number
+  short_description: string | null
   price: number
+  compare_at_price: number
   price_min: number
   price_max: number
+  related: number[],
+  category_id: number
+  category: CategoryProduct
+  sub_categories: ProductCategories[]
+  brand: Brand | null
+  tags: Tags[]
+  attributes: ProductAttribute[]
   // metadata
   images: ProductImage[]
   variants: ProductVariant[]
-  ratings: any
-  // meta
   meta_data: {
     meta_title?: string
     meta_description?: string
     meta_keywords?: string
-  },
-  tags: Tags[],
-  related: number[]
+  } | null,
+  meta_tags: object | null
+}
+interface ProductAttribute {
+  id: number
+  position: number,
+  attribute: Attribute
+  values: AttributeValue[]
 }
 
 interface Tags {
@@ -54,7 +59,6 @@ interface Tags {
 interface ProductCategories {
   id: number
   category: CategoryProduct
-  categoryId: number
   priority: number
 }
 interface ProductImage {
@@ -219,7 +223,7 @@ type ProductCreateInput = {
     create: Partial<ProductVariant>[]
   },
   attributes?: {
-    create : ProductAttributeCreateInput[]
+    create: ProductAttributeCreateInput[]
   },
   specifications?: {
     connect: { id: number }[]
@@ -264,7 +268,10 @@ type ProductUpdateInput = {
     }
   },
   sub_categories?: {
-    connect: { id: number }[]
+    connectOrCreate: {
+      where: { category_id: number },
+      create: {category: { connect: { id: number } }}[]
+    }
   }
 }
 
@@ -289,4 +296,4 @@ type ProductVariantUpdateInput = {
 }
 
 
-export type { Product, ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductAttribute,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

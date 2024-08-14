@@ -60,7 +60,7 @@ function InputController<
           <FormLabel required={requied}>
             <Typography
               variant="body2"
-              className=" font-bold text-[#6c798f]"
+              className=" font-bold  text-[#272727]"
             >
               {label}
             </Typography >

@@ -23,7 +23,7 @@ const product: MenuItemChildren = {
                 },
                 {
                         id: 'product',
-                        title: 'Tất cả sản phẩm',
+                        title: 'Danh sách sản phẩm',
                         type: "item",
                         url: '/product',
                         icon: <Inventory2Icon />,

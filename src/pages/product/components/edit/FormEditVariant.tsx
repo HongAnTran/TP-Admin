@@ -9,7 +9,8 @@ import { toast } from 'react-toastify';
 
 export default function FormEditVariant({ product, productDetail, onUpdatePrice, images }:
   {
-    product: ProductVariant, productDetail: Product,
+    product: ProductVariant, 
+    productDetail: Product,
     onUpdatePrice: (data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min" | "compare_at_price">) => Promise<void>,
     images: ProductImage[]
   }) {
