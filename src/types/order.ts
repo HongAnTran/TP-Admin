@@ -1,5 +1,5 @@
 import { Address } from "@/types/address"
-import { ProductOrder } from "./product"
+// import { ProductOrder } from "./product"
 
 
 
@@ -11,7 +11,7 @@ export enum OrderStatus {
   SHIPPED = 9, // Đơn hàng đã được gửi đi
   SUCCESS = 1, // Đơn hàng đã được giao thành công
   CANCELLED = 10, // Đơn hàng đã bị hủy
-  RETURNED  = 12, // Đơn hàng bị trả
+  RETURNED = 12, // Đơn hàng bị trả
 }
 
 
@@ -20,7 +20,7 @@ interface Order {
   token: string
   code: string
   customer_id: number
-  items: ProductOrder[]
+  items: any[]
   total_price: number
   temp_price: number
   ship_price: number
