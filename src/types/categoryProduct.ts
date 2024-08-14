@@ -26,4 +26,7 @@ type CategoryCreateInput = {
     meta_keywords?: string
   }
 }
-export type { CategoryProduct, CategoryCreateInput }
+type CategoryUpdateInput = Partial<CategoryCreateInput>
+
+
+export type { CategoryProduct, CategoryCreateInput  , CategoryUpdateInput}

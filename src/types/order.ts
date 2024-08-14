@@ -29,7 +29,7 @@ interface Order {
 
 
 
-enum OrderStatus {
+export enum OrderStatus {
   PENDING, // Đơn hàng đang chờ xử lý
   PROCESSING, // Đơn hàng đang được xử lý
   SHIPPED, // Đơn hàng đã được gửi đi
@@ -37,5 +37,4 @@ enum OrderStatus {
   CANCELLED, // Đơn hàng đã bị hủy
   FAILED, // Đơn hàng không thành công
 }
-export { OrderStatus }
 export type { Order }

@@ -34,6 +34,14 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
+
+  async patch<t>(id: string | number, data: any): Promise<t> {
+    try {
+      return (await client.put(`${this.url}/${id}`, data)).data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
   async delete(id: string | number) {
     try {
       return (await client.delete(`${this.url}/${id}`)).data;
