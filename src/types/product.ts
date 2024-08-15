@@ -275,7 +275,23 @@ type ProductUpdateInput = {
   }
 }
 
-
+type ProductOrder = Pick<Product, | "title" | "slug" | "category_id"  | "barcode"> & {
+  id: number,
+  line_price: number
+  price: number
+  price_original: number
+  line_price_original: number
+  variant_id: number
+  product_id: ProductId
+  product_title: string
+  variant_title: string
+  variant_options: string[]
+  quantity: number
+  image: string
+  selected: boolean
+  category_title: string
+  vendor?: string
+}
 
 type ProductVariantUpdateInput = {
   barcode?: null | string,
@@ -296,4 +312,4 @@ type ProductVariantUpdateInput = {
 }
 
 
-export type { Product, ProductAttribute,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductOrder,ProductAttribute,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

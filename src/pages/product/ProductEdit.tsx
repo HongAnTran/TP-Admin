@@ -2,7 +2,7 @@ import { useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import { Product, ProductImage, ProductUpdateInput, ProductVariant } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
-import { Button,  Dialog, DialogContent, Grid, Input, Typography } from '@mui/material'
+import { Button, Dialog, DialogContent, Grid, Input, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
@@ -219,10 +219,14 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
             <MainCard title="Danh sách biến thể">
               <ul className=' mt-3 flex flex-col gap-2'>
                 {product.variants.map(variant => (
-                  <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
-                    <div>
-                      <Typography variant="body2"  color="blueviolet" fontWeight="600" >{variant.title}</Typography>
-                      <Typography variant="body1" >sku: {variant.sku}</Typography>
+                  <li key={variant.sku} className='  grid grid-cols-4 gap-4'>
+                    <div className=' flex items-center gap-2 col-span-2'>
+                      {variant.image?.url ? <img src={variant.image?.url} className=' w-12 h-12' /> : <div className=' w-12 h-12 border flex items-center justify-center'>+</div>}
+
+                      <div>
+                        <Typography variant="body2" color="blueviolet" fontWeight="600" >{variant.title}</Typography>
+                        <Typography variant="body1" >sku: {variant.sku}</Typography>
+                      </div>
                     </div>
                     <div className=' flex items-center  gap-2'>
                       <span>Giá</span>
