@@ -6,7 +6,8 @@ import InputController from '@/components/InputControl';
 import { useForm } from 'react-hook-form';
 import OrdersServicesAPI from '@/services/OrdersServicesAPI';
 import { OrderStatus } from '@/types/order';
-
+import {  format } from "date-fns";
+import { convetNumberToPriceVND } from '@/utils';
 const limit = 10
 
 export default function Orders() {
@@ -29,16 +30,29 @@ export default function Orders() {
         return <Link className=' h-full flex items-center' to={params.row.slug}><Typography variant="body2" className=' text-blue-400' >{params.value}</Typography></Link>
       }
     },
-    // { field: 'category', headerName: 'Nhóm sản phẩm', width: 200 },
-    // { field: 'brand', headerName: 'Nhà cung cấp', width: 200 },
     {
       field: "created_at", headerName: 'Ngày tạo', width: 200, renderCell: (params) => {
-        return <p>{params.value}</p>
+        return <p>{format(params.value , "dd-MM HH:mm:ss")}</p>
       }
     },
     {
       field: 'status', headerName: 'Trạng thái', width: 200, renderCell: (params) => {
         return <p>{params.value}</p>
+      }
+    },
+    {
+      field: 'payment', headerName: 'Thanh toán', width: 200, renderCell: (params) => {
+        return <p>{params.value.status}</p>
+      }
+    },
+    {
+      field: 'shipping', headerName: 'Giao hàng', width: 200, renderCell: (params) => {
+        return <p>{params.value.status}</p>
+      }
+    },
+    {
+      field: 'total_price', headerName: 'Tổng tiền', width: 200, renderCell: (params) => {
+        return <p>{convetNumberToPriceVND(params.value)}</p>
       }
     },
  
