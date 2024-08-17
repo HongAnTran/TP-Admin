@@ -49,6 +49,14 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
+
+  async deleteMany(ids: string ) {
+    try {
+      return (await client.post(`${this.url}/delete/many?ids=${ids}`)).data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default ServiceAPI;

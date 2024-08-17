@@ -7,18 +7,19 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-export default function FormEditVariant({ product, productDetail, onUpdatePrice, images }:
+export default function FormEditVariant({ product, productDetail, onUpdatePrice, images, refetch }:
   {
-    product: ProductVariant, 
+    product: ProductVariant,
     productDetail: Product,
     onUpdatePrice: (data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min" | "compare_at_price">) => Promise<void>,
-    images: ProductImage[]
+    images: ProductImage[],
+    refetch: () => void
   }) {
   const { mutateAsync } = ProductsVariantServicesAPI.useUpdate()
   const [openEdit, setOpenEdit] = useState(false)
 
 
-  const { handleSubmit, control, setValue, watch } = useForm<ProductVariantUpdateInput>({
+  const { handleSubmit, control, setValue, watch, getFieldState } = useForm<ProductVariantUpdateInput>({
     mode: "onSubmit",
     defaultValues: {
       title: product.title,
@@ -28,7 +29,7 @@ export default function FormEditVariant({ product, productDetail, onUpdatePrice,
       price: product.price,
       sku: product.sku,
       position: product.position,
-      image: { connect: { id: product.image_id || undefined } },
+      image: product.image_id ? { connect: { id: product.image_id } } : undefined,
     }
   });
 
@@ -51,36 +52,45 @@ export default function FormEditVariant({ product, productDetail, onUpdatePrice,
         }
       })
 
-      const variants = productDetail.variants.filter(pro => pro.id !== product.id)
-      variants.push({ ...res })
-      let price = 0
-      let compare_at_price = 0
-      let price_min = 0
-      let price_max = 0
 
-      const variantsSortPosition = variants.slice().sort((a, b) => a.position - b.position)
-      const variantsSortPrice = variants.slice().sort((a, b) => a.price - b.price)
-
-      const variantDefault = variantsSortPosition[0]
-      const variantMinPrice = variantsSortPrice[0]
+      const isUpdatePrice = getFieldState('price').isDirty
+      const isUpdateComparePrice = getFieldState("compare_at_price").isDirty
+      if (isUpdatePrice || isUpdateComparePrice) {
 
 
-      price = variantDefault.price
-      compare_at_price = variantDefault.compare_at_price
+        const variants = productDetail.variants.filter(pro => pro.id !== product.id)
+        variants.push({ ...res })
+        let price = 0
+        let compare_at_price = 0
+        let price_min = 0
+        let price_max = 0
+
+        const variantsSortPosition = variants.slice().sort((a, b) => a.position - b.position)
+        const variantsSortPrice = variants.slice().sort((a, b) => a.price - b.price)
+
+        const variantDefault = variantsSortPosition[0]
+        const variantMinPrice = variantsSortPrice[0]
 
 
-      if (variants.length > 1) {
-        const variantMaxPrice = variantsSortPrice[variants.length - 1]
-        price_max = variantMaxPrice.price
-        price_min = variantMinPrice.price
+        price = variantDefault.price
+        compare_at_price = variantDefault.compare_at_price
+
+
+        if (variants.length > 1) {
+          const variantMaxPrice = variantsSortPrice[variants.length - 1]
+          price_max = variantMaxPrice.price
+          price_min = variantMinPrice.price
+        }
+
+        await onUpdatePrice({
+          price,
+          price_max,
+          price_min,
+          compare_at_price
+        })
+      } else {
+        refetch()
       }
-
-      await onUpdatePrice({
-        price,
-        price_max,
-        price_min,
-        compare_at_price
-      })
       toast.success("Cập nhập thành công")
     } catch (error) {
       toast.error("Cập nhập thất bại")
@@ -172,7 +182,7 @@ export default function FormEditVariant({ product, productDetail, onUpdatePrice,
             className="my-3"
             labelClassName="text-[#272727]"
           />
-        <Button variant="contained" type="button" onClick={()=>setOpenEdit(true)}>Cập nhập hình ảnh</Button>
+          <Button variant="contained" type="button" onClick={() => setOpenEdit(true)}>Cập nhập hình ảnh</Button>
 
         </div>
         <Button variant="contained" type="submit">Lưu</Button>

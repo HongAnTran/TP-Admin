@@ -1,13 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ProductsServicesAPI from '@/services/ProductsServicesAPI';
-import { Product, ProductImage, ProductUpdateInput, ProductVariant } from '@/types/product';
+import { Product, ProductAttributeUpdateInput, ProductImage, ProductUpdateInput, ProductVariant } from '@/types/product';
 import MainCard from '@/ui-component/cards/MainCard'
-import { Button, Dialog, DialogContent, Grid, Input, Typography } from '@mui/material'
+import { Button, Dialog, DialogContent, Grid, IconButton, Input, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
 import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
 import SelectCategory from './components/SelectCategory';
-// import SelectCategorySub from './components/SelectCategorySub';
 import { useParams } from 'react-router-dom';
 import { createSlug, fillArrayToLength } from '@/utils/addProduct';
 import { toast } from 'react-toastify';
@@ -18,7 +17,12 @@ import FormEditImage from './components/edit/FormEditImage';
 import AddIcon from '@mui/icons-material/Add';
 import FormAddImage from './components/edit/FormAddImage';
 import FormEditAttributes from './components/edit/FormEditAttributes';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import { AttributeValue } from '@/types/attribute';
+import cn from '@/utils/cn';
+import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
+import ProductsAttributeServicesAPI from '@/services/ProductsAttributeServicesAPI';
+import { DataUpdate } from '@/types/common';
 
 export default function ProductEdit() {
 
@@ -34,17 +38,15 @@ export default function ProductEdit() {
 
 
 function ProductEditForm({ product, refetch }: { product: Product, refetch: () => void }) {
-
   const { mutateAsync } = ProductsServicesAPI.useUpdate()
-  // const [options, setOptions] = useState<ProductOption[]>(product.options)
-  const images = fillArrayToLength(product.images, 4, "")
+  const { mutateAsync: deleteVariants } = ProductsVariantServicesAPI.useDeleteMany()
+  const { mutateAsync: updateProductAttribute } = ProductsAttributeServicesAPI.useUpdate()
+
   const [variantEdit, setVariantEdit] = useState<ProductVariant>(product.variants[0])
-
-
   const [openEdit, setOpenEdit] = useState(false)
-  const [openEditImage, setOpenEditImage] = useState(false)
-  const [openAddImage, setOpenAddImage] = useState(false)
-  const [imageEdit, setImageEdit] = useState<ProductImage | null>(null)
+
+  const [attributesDetele, setAttributesDetele] = useState<AttributeValue[]>([])
+  const [variantsDetele, setVariantsDetele] = useState<ProductVariant[]>([])
 
   const { brand_id, category_id, description_html, meta_data, slug, status, short_description, title } = product
 
@@ -54,7 +56,6 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
       title,
       brand: { connect: { id: brand_id } },
       category: { connect: { id: category_id } },
-      // sub_categories: { set: sub_categories.map(item => item.category.id) },
       description_html,
       meta_data: meta_data ? meta_data : undefined,
       slug,
@@ -81,7 +82,6 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
 
     }
   }
-
   async function updatePrice(data: Pick<ProductUpdateInput, "price" | "price_max" | "price_min">) {
     try {
       await mutateAsync({
@@ -100,13 +100,44 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
     setOpenEdit(true)
   }
 
-  function onEditImage(image: ProductImage) {
-    setImageEdit(image)
-    setOpenEditImage(true)
+
+  function handleCancelEditAttribute() {
+    setAttributesDetele([])
   }
 
+  async function handleDeleteAttributes() {
+    try {
+      const idsVariant = variantsDetele.map(vari => vari.id).join(",")
+
+      const dataDelete: DataUpdate<ProductAttributeUpdateInput>[] = product.attributes.map(data => {
+        const values = attributesDetele.filter(attr => data.values.some(value => value.id === attr.id))
+        if (!values.length) return
+        return ({
+          id: data.id,
+          data: { values: { 
+            // connect: values.map(attribute => ({ id: attribute.id })) ,
+            disconnect: values.map(attribute => ({ id: attribute.id })) ,
+          
+          } }
+        })
+      }
+      ).filter(Boolean) as DataUpdate<ProductAttributeUpdateInput>[]
+      await Promise.all([...dataDelete.map(data => updateProductAttribute(data)) , deleteVariants(idsVariant)])
+    } catch (error) {
+      toast.error(JSON.stringify(error))
+    }
+
+  }
+
+  useEffect(() => {
+    const variants = product.variants.filter(variant => {
+      return variant.attribute_values.some(item => attributesDetele.find(attr => attr.id === item.id))
+    })
+    setVariantsDetele(variants)
+  }, [attributesDetele, product.variants])
+
   return (
-    <div className=' py-2 '>
+    <div className=' py-2 pb-10 '>
       <div className=' flex justify-between mb-2'>
         <Typography variant="h2">{product.title}</Typography>
 
@@ -195,36 +226,24 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
               </form>
             </MainCard>
             <MainCard title="Hình ảnh sản phẩm">
-              <div className=' grid grid-cols-2 gap-2'>
-                {images.map((image) => (
-                  <div className=' flex flex-col gap-2  justify-center items-center'>
-                    <div className=' relative'>
-                      {image ? <img src={image.url} className=' w-[150px] h-[150px] cursor-pointer' onClick={() => onEditImage(image)} /> :
-                        <div
-                          onClick={() => setOpenAddImage(true)}
-                          className=' w-[150px] h-[150px] cursor-pointer border-dashed  rounded-md border-2 flex justify-center items-center'>
-                          <AddIcon />
-                        </div>
-                      }
-
-                    </div>
-                    <p>{image.position}</p>
-                  </div>
-                ))}
-              </div>
+              <ProductEditImages product={product} />
             </MainCard>
             <MainCard title="Biến thể">
-              <FormEditAttributes product={product} />
+              <FormEditAttributes product={product} onDelete={(attr) => { setAttributesDetele((pre) => [...pre, attr]) }} attributesDetele={attributesDetele} />
             </MainCard>
             <MainCard title="Danh sách biến thể">
               <ul className=' mt-3 flex flex-col gap-2'>
-                {product.variants.map(variant => (
-                  <li key={variant.sku} className='  grid grid-cols-4 gap-4'>
+                {product.variants.map(variant => {
+                  const isDelete = variantsDetele.some(variantD => variantD.id === variant.id)
+
+                  return (<li key={variant.sku} className={cn('  grid grid-cols-4 gap-4', { "opacity-70": isDelete })} >
                     <div className=' flex items-center gap-2 col-span-2'>
                       {variant.image?.url ? <img src={variant.image?.url} className=' w-12 h-12' /> : <div className=' w-12 h-12 border flex items-center justify-center'>+</div>}
 
                       <div>
-                        <Typography variant="body2" color="blueviolet" fontWeight="600" >{variant.title}</Typography>
+                        <Typography variant="body2" color="blueviolet" fontWeight="600" className={cn({
+                          " line-through ": isDelete
+                        })} >{variant.title}</Typography>
                         <Typography variant="body1" >sku: {variant.sku}</Typography>
                       </div>
                     </div>
@@ -241,37 +260,96 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
                     <Button onClick={() => {
                       onEditVariant(variant)
                     }}>Sửa</Button>
-                  </li>
-                ))}
+                  </li>)
+                })}
               </ul>
             </MainCard>
           </div>
 
         </Grid>
         <Grid sm={3}>
+          <div className=' flex flex-col gap-4'>
+
+            <MainCard title="Hiển thị">
+
+            </MainCard>
+            <MainCard title="Nhóm sản phẩm">
+
+            </MainCard>
+            <MainCard title="Nhãn dán">
+
+            </MainCard></div>
         </Grid>
       </Grid>
 
 
       <Dialog open={openEdit} onClose={() => { setOpenEdit(false) }} >
         <DialogContent>
-          <FormEditVariant images={product.images} product={variantEdit} productDetail={product} onUpdatePrice={updatePrice} />
+          <FormEditVariant refetch={refetch} images={product.images} product={variantEdit} productDetail={product} onUpdatePrice={updatePrice} />
         </DialogContent>
       </Dialog>
 
-      <Dialog open={openEditImage} onClose={() => { setOpenEditImage(false) }} >
-        <DialogContent>
-          {imageEdit &&
-            <FormEditImage image={imageEdit} />
-          }
-        </DialogContent>
-      </Dialog>
-      <Dialog open={openAddImage} onClose={() => { setOpenAddImage(false) }} >
-        <DialogContent>
-          <FormAddImage product_id={product.id} />
-        </DialogContent>
-      </Dialog>
+      {attributesDetele.length ? <div className=' fixed bottom-0 left-0 right-0 h-[60px]  bg-black  flex items-center  justify-center'>
+        <div className=' flex items-center justify-center gap-4'>
+          <Typography variant="h3">Thay đổi biến thể</Typography>
+          <Button variant="outlined" onClick={handleCancelEditAttribute} >Hủy</Button>
+          <Button variant="contained" onClick={handleDeleteAttributes}>Xác nhận</Button>
+
+        </div>
+      </div> : null}
     </div>
   )
+}
+
+
+
+function ProductEditImages({ product }: { product: Product }) {
+  const images = fillArrayToLength(product.images, 4, "")
+
+  const [openEditImage, setOpenEditImage] = useState(false)
+  const [openAddImage, setOpenAddImage] = useState(false)
+  const [imageEdit, setImageEdit] = useState<ProductImage | null>(null)
+
+  function onEditImage(image: ProductImage) {
+    setImageEdit(image)
+    setOpenEditImage(true)
+  }
+
+  return <>
+    <div className=' grid grid-cols-2 gap-2'>
+      {images.map((image) => (
+        <div className=' flex flex-col gap-2  justify-center items-center relative'>
+          <div className=' relative'>
+            {image ? <img src={image.url} className=' w-[150px] h-[150px] cursor-pointer' onClick={() => onEditImage(image)} /> :
+              <div
+                onClick={() => setOpenAddImage(true)}
+                className=' w-[150px] h-[150px] cursor-pointer border-dashed  rounded-md border-2 flex justify-center items-center'>
+                <AddIcon />
+              </div>
+            }
+
+          </div>
+          <p>{image.position}</p>
+
+          <IconButton className='  absolute top-0 right-4'>
+            <DeleteIcon />
+          </IconButton>
+        </div>
+      ))}
+    </div>
+
+    <Dialog open={openEditImage} onClose={() => { setOpenEditImage(false) }} >
+      <DialogContent>
+        {imageEdit &&
+          <FormEditImage image={imageEdit} />
+        }
+      </DialogContent>
+    </Dialog>
+    <Dialog open={openAddImage} onClose={() => { setOpenAddImage(false) }} >
+      <DialogContent>
+        <FormAddImage product_id={product.id} />
+      </DialogContent>
+    </Dialog>
+  </>
 }
 

@@ -170,7 +170,7 @@ export default function ProductAdd() {
 
       </div>
       <Grid container gap={3} wrap="nowrap" className=' relative'>
-        <Grid sm={12}>
+        <Grid sm={9}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -195,21 +195,21 @@ export default function ProductAdd() {
 
                 <div className=' grid  grid-cols-3 gap-4'>
                   <SelectCategory
-                  label='Danh mục'
+                    label='Danh mục'
 
                     control={control}
                     name="category.connect.id"
 
                   />
-              
+
                   <SelectBrand
-                  label='Thương hiệu'
+                    label='Thương hiệu'
 
                     control={control}
                     name="brand.connect.id"
                   />
-                      <SelectCategorySub
-                  label='Danh mục phụ'
+                  <SelectCategorySub
+                    label='Danh mục phụ'
 
                     name="sub_categories.create"
                     control={control}
@@ -321,6 +321,22 @@ export default function ProductAdd() {
           </div>
 
         </Grid>
+
+
+        <Grid sm={3}>
+          <div className=' flex flex-col gap-4'>
+
+            <MainCard title="Hiển thị">
+
+            </MainCard>
+            <MainCard title="Nhóm sản phẩm">
+
+            </MainCard>
+            <MainCard title="Nhãn dán">
+
+            </MainCard></div>
+        </Grid>
+
       </Grid>
     </div>
   )

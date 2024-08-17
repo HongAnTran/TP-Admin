@@ -48,7 +48,13 @@ interface ProductAttribute {
   attribute: Attribute
   values: AttributeValue[]
 }
-
+interface ProductAttributeUpdateInput {
+  position?: number
+  values?: {
+    // connect: { id: number }[]
+    disconnect: { id: number }[]
+  }
+}
 interface Tags {
   id: number,
   name: string
@@ -96,24 +102,24 @@ interface ProductImageCreate {
 // type ProductList = Pick<Product, "id"|"title" | "slug" |"">
 
 interface ProductVariant {
-  barcode: null | string,
-  compare_at_price: number,
   id: number,
-  option1: string,
-  option2: string,
-  option3: string,
+  barcode: null | string,
   position: number,
+  compare_at_price: number,
   price: number,
   sku: string,
   title: string,
+  created_at: string
   updated_at: null | string,
-  inventory_quantity: number,
-  image: ProductImage | null,
-  image_id: number | null
-  available: boolean,
-  // optionValues : 
-}
 
+  inventory_quantity: number,
+  sold_quantity: number
+  image_id: number | null,
+  product_id: number
+  image: ProductImage | null,
+  available: boolean,
+  attribute_values: AttributeValue[]
+}
 
 interface ProductVariantCreateInput {
   barcode?: string,
@@ -220,7 +226,7 @@ type ProductCreateInput = {
     connect: { id: number }
   }
   variants?: {
-    create: Partial<ProductVariant>[]
+    create: ProductVariantCreateInput[]
   },
   attributes?: {
     create: ProductAttributeCreateInput[]
@@ -270,12 +276,12 @@ type ProductUpdateInput = {
   sub_categories?: {
     connectOrCreate: {
       where: { category_id: number },
-      create: {category: { connect: { id: number } }}[]
+      create: { category: { connect: { id: number } } }[]
     }
   }
 }
 
-type ProductOrder = Pick<Product, | "title" | "slug" | "category_id"  | "barcode"> & {
+type ProductOrder = Pick<Product, | "title" | "slug" | "category_id" | "barcode"> & {
   id: number,
   line_price: number
   price: number
@@ -312,4 +318,4 @@ type ProductVariantUpdateInput = {
 }
 
 
-export type { Product, ProductOrder,ProductAttribute,ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };
+export type { Product, ProductAttributeUpdateInput,ProductOrder, ProductAttribute, ProductImageCreate, ProductImage, ProductImageUpdate, ProductVariantCreateInput, ProductGroupSpecifications, ProductVariantUpdateInput, Products, ProductUpdateInput, ProductCreateInput, ProductsParams, ProductOption, ProductVariant, ProductRating, ProductTypeSpecifications, ProductSpecifications };

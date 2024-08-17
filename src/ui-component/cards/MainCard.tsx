@@ -10,7 +10,7 @@ const headerSX = {
 };
 
 // ==============================|| CUSTOM MAIN CARD ||============================== //
- 
+
 interface MainCardProps {
     border?: boolean,
     boxShadow?: boolean,
@@ -19,12 +19,12 @@ interface MainCardProps {
     contentClass?: string,
     contentSX?: object,
     darkTitle?: boolean,
-    secondary?:  ReactNode | string ,
+    secondary?: ReactNode | string,
     shadow?: string,
     sx?: object,
-    title?:  ReactNode | string 
-    elevation? : number,
-    [x:string]: any;
+    title?: ReactNode | string
+    elevation?: number,
+    [x: string]: any;
 
 }
 
@@ -32,7 +32,7 @@ const MainCard = forwardRef(
     (
         {
             border = true,
-            boxShadow,
+            boxShadow = true,
             children,
             content = true,
             contentClass = '',
@@ -44,10 +44,10 @@ const MainCard = forwardRef(
             elevation,
             title,
             ...others
-        }:MainCardProps,
-        ref : Ref<HTMLDivElement>
+        }: MainCardProps,
+        ref: Ref<HTMLDivElement>
     ) => {
-        const theme : any = useTheme();
+        const theme: any = useTheme();
 
         return (
             <Card
@@ -57,9 +57,9 @@ const MainCard = forwardRef(
                 sx={{
                     border: border ? '1px solid' : 'none',
                     borderColor: theme.palette.primary[200] + 75,
-                    ':hover': {
-                        boxShadow: boxShadow ? shadow || '0 2px 14px 0 rgb(32 40 45 / 8%)' : 'inherit'
-                    },
+
+                    boxShadow: boxShadow ? shadow || '0 2px 14px 0 rgb(32 40 45 / 20%)' : 'inherit',
+
                     ...sx
                 }}
             >

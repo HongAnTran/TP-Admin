@@ -63,4 +63,11 @@ export default {
 
     );
   },
+
+  useDeleteMany: () => {
+    return useMutation<string, Error, any>({
+      mutationFn: (ids:  string) => serviceAPI.deleteMany(ids),
+    }
+    );
+  },
 };

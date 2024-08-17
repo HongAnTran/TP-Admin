@@ -75,7 +75,7 @@ function SelectController<
           <label>
             <Typography
               variant="h6"
-              className={`font-medium text-[#272727] ${labelClassName}`}
+              className={`font-medium  ${labelClassName}`}
             >
               {label}
             </Typography>
