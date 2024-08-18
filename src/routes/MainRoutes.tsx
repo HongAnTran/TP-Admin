@@ -23,7 +23,11 @@ const BlogAdd = Loadable(lazy(() => import('@/pages/blog/BlogAdd')));
 
 
 const Orders = Loadable(lazy(() => import('@/pages/order/Orders')));
+
+
 const SettingsPage = Loadable(lazy(() => import('@/pages/settings/SettingsPage')));
+const SettingsPageAdd = Loadable(lazy(() => import('@/pages/settings/SettingsPageAdd')));
+const SettingsPageEdit = Loadable(lazy(() => import('@/pages/settings/SettingsPageEdit')));
 
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
@@ -91,10 +95,16 @@ const MainRoutes: RouteObject = {
             path: '/settings',
             element: <SettingsPage />
         },
+        {
+            path: '/settings/add',
+            element: <SettingsPageAdd />
+        },
+        {
+            path: "/settings/:id",
+            element: <SettingsPageEdit />
+        },
 
     ]
-
-    // ]
 };
 
 export default MainRoutes;

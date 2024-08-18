@@ -14,7 +14,11 @@ export default function SettingsPage() {
     {
       field: "id", headerName: 'id', width: 100
     },
-    { field: 'key', headerName: 'key', flex: 1 },
+    {
+      field: 'key', headerName: 'key', flex: 1, renderCell: (params) => {
+        return <Link className=' h-full flex items-center' to={params.row.key}><Typography variant="body2" className=' text-blue-400' >{params.value}</Typography></Link>
+      }
+    },
     {
       field: 'updatedAt', headerName: 'Ngày cập nhập', width: 200,
       renderCell: (params) => {

@@ -13,9 +13,10 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
-  async getOne<t>(id: string | number): Promise<t> {
+  async getOne<t>(id: string | number, urlBase?: string): Promise<t> {
+
     try {
-      return (await client.get(`${this.url}/${id}`)).data;
+      return (await client.get(`${this.url}/${urlBase ? urlBase + "/" : ""}${id}`)).data;
     } catch (error) {
       return Promise.reject(error);
     }
@@ -50,7 +51,7 @@ class ServiceAPI {
     }
   }
 
-  async deleteMany(ids: string ) {
+  async deleteMany(ids: string) {
     try {
       return (await client.post(`${this.url}/delete/many?ids=${ids}`)).data;
     } catch (error) {

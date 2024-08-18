@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
-import { OptionsUseQuery, Params, Error, ResponseList, DataUpdate } from "@/types/common";
+import { OptionsUseQuery, Params, ResponseList, DataUpdate } from "@/types/common";
 import { Setting, SettingCreateInput, SettingUpdateInput } from "@/types/Settings.type";
 
 const URL: string = "/settings";
@@ -23,7 +23,7 @@ export default {
     return useQuery<DataQuery, Error>(
       {
         queryKey: [QUERY_KEY, id],
-        queryFn: () => serviceAPI.getOne(id),
+        queryFn: () => serviceAPI.getOne<DataQuery>(id, "key"),
         ...options
       }
     );

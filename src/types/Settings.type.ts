@@ -1,7 +1,8 @@
 interface Setting {
   id: number
   key: string
-  value: object
+  value: any
+  active : boolean
   description: string | null
   access_control: number[]
   createdAt: Date
@@ -12,10 +13,13 @@ interface SettingCreateInput{
   key: string
   value: string
   description?: string
+  active:boolean
 }
 interface SettingUpdateInput{
   value: string
   description?: string
+  active?:boolean
+
 }
 
 export type {Setting ,SettingCreateInput,SettingUpdateInput }
