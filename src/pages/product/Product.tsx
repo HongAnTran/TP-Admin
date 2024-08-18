@@ -42,6 +42,9 @@ export default function Product() {
   }
   const columns: GridColDef[] = [
     {
+      field: "id", headerName: 'id', width:80,
+    },
+    {
       field: "title", headerName: 'Tên sản phẩm', flex: 1, renderCell: (params) => {
         return <Link className=' h-full flex items-center' to={params.row.slug}><Typography variant="body2" className=' text-blue-400' >{params.value}</Typography></Link>
       }

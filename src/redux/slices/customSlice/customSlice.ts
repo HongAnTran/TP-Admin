@@ -8,7 +8,7 @@ import { CustomState } from '../../../types/config'
     isOpen: [], // for active default menu
     fontFamily: config.fontFamily,
     borderRadius: config.borderRadius,
-    opened: true,
+    opened: window.innerWidth > 720 ?  true : false,
     mode: config.mode,
     lang:config.i18n
 };
