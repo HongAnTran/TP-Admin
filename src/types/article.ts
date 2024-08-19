@@ -17,7 +17,11 @@ interface Article {
   published_date: string;
   description: string;
   thumnal_url: string
-
+  meta_data: {
+    meta_title?: string
+    meta_description?: string
+    meta_keywords?: string
+  } | null,
 }
 
 
@@ -29,11 +33,11 @@ type ArticleCreateInput = {
   content?: string; // Nội dung của bài viết
   description?: string;
   thumnal_url?: string
-  meta_data?: {
+  meta_data: {
     meta_title?: string | null
     meta_description?: string | null
     meta_keywords?: string | null
-  }
+  } | null
 
   category?: {
     connect: { id: number }

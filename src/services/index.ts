@@ -1,5 +1,6 @@
 // import { AxiosError, AxiosResponse } from "axios";
 import client from "@/api/axios";
+import { AxiosRequestConfig } from "axios";
 // import { Params } from "@/types/common";
 class ServiceAPI {
   url: string;
@@ -21,9 +22,9 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
-  async add<t>(data: any): Promise<t> {
+  async add<t>(data: any, config?: AxiosRequestConfig): Promise<t> {
     try {
-      return (await client.post(`${this.url}`, data)).data;
+      return (await client.post(`${this.url}`, data, config)).data;
     } catch (error) {
       return Promise.reject(error);
     }

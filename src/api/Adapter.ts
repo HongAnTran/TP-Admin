@@ -1,6 +1,10 @@
-interface UploadResponse {
-  url: string;
-}
+import FileService from "@/services/FileService";
+
+// interface UploadResponse {
+//   url: string;
+// }
+
+
 
 class UploadAdapter {
   private loader: any;
@@ -14,13 +18,8 @@ class UploadAdapter {
       .then((file: File) => new Promise((resolve, reject) => {
         const formData = new FormData();
         formData.append('upload', file);
-
-        fetch('YOUR_IMAGE_UPLOAD_ENDPOINT', {
-          method: 'POST',
-          body: formData,
-        })
-          .then(response => response.json())
-          .then((result: UploadResponse) => {
+        FileService.upload(formData).then((result : any) => {
+          console.log(result)
             if (result && result.url) {
               resolve({
                 default: result.url

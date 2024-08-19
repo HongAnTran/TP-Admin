@@ -26,15 +26,16 @@ export default function CategoryAdd() {
       const res = await mutateAsync({
         ...data,
         slug: createSlug(data.title),
-      status : ArticleStatus.SHOW
+        status: ArticleStatus.SHOW
       })
       toast.error(`Thêm danh mục ${res.title} thành công`)
       reset({
         title: "",
         slug: "",
         description: "",
-        status : ArticleStatus.SHOW
-
+        status: ArticleStatus.SHOW,
+        meta_data : null
+        
       })
     } catch (error) {
       toast.error(JSON.stringify(error))
@@ -44,7 +45,7 @@ export default function CategoryAdd() {
   return (
     <div className=' py-2'>
       <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Thêm Danh mục mới</Typography>
+        <Typography variant="h1">Thêm Bài viết</Typography>
 
       </div>
       <Grid container gap={3} wrap="nowrap">
@@ -96,26 +97,27 @@ export default function CategoryAdd() {
                     value={watch("content") || ""}
                   />
                 </div>
-                {/* <div className=' flex gap-2'>
-                  <InputController
-
-                    label="meta_description"
-                    control={control}
-                    name="meta_description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
+                <div className=' flex gap-2'>
                   <InputController
 
                     label="meta_title"
                     control={control}
-                    name="meta_title"
+                    name="meta_data.meta_title"
                     type="text"
                     className="my-3"
                     labelClassName="text-[#272727]"
                   />
-                </div> */}
+                  <InputController
+
+                    label="meta_description"
+                    control={control}
+                    name="meta_data.meta_description"
+                    type="text"
+                    className="my-3"
+                    labelClassName="text-[#272727]"
+                  />
+
+                </div>
 
                 <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>
               </form>

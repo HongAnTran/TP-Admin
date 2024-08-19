@@ -7,7 +7,8 @@ const serviceAPI = new ServiceAPI(URL);
 
 export default {
 
-  upload: async(file:any)=>{
-    return  await serviceAPI.add(file)
+  upload: async(file:FormData)=>{
+    return  await serviceAPI.add(file ,{
+    })
   }
 };

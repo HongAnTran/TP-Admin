@@ -23,6 +23,8 @@ import cn from '@/utils/cn';
 import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
 import ProductsAttributeServicesAPI from '@/services/ProductsAttributeServicesAPI';
 import { DataUpdate } from '@/types/common';
+import ProductsImageServicesAPI from '@/services/ProductsImageServicesAPI';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ProductEdit() {
 
@@ -305,6 +307,9 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
 
 function ProductEditImages({ product }: { product: Product }) {
   const images = fillArrayToLength(product.images, 4, "")
+  const {useDelete} = ProductsImageServicesAPI
+  const query = useQueryClient()
+  const  {mutateAsync : onDelete} = useDelete()
 
   const [openEditImage, setOpenEditImage] = useState(false)
   const [openAddImage, setOpenAddImage] = useState(false)
@@ -314,13 +319,33 @@ function ProductEditImages({ product }: { product: Product }) {
     setImageEdit(image)
     setOpenEditImage(true)
   }
+  async function handleDelete(image : ProductImage){
+    try {
+      await onDelete(image.id , {
+        onSuccess:()=>{
+          query.invalidateQueries({queryKey:["/products",product.id]})
+        }
+      })
+      toast.error("Xóa thành công")
+
+    } catch (error) {
+      toast.error("Có lỗi xảy ra")
+    }
+  }
 
   return <>
     <div className=' grid grid-cols-2 gap-2'>
       {images.map((image) => (
         <div className=' flex flex-col gap-2  justify-center items-center relative'>
           <div className=' relative'>
-            {image ? <img src={image.url} className=' w-[150px] h-[150px] cursor-pointer' onClick={() => onEditImage(image)} /> :
+            {image ?<>
+              <img src={image.url} className=' w-[150px] h-[150px] cursor-pointer' onClick={() => onEditImage(image)} /> 
+              <IconButton className='  absolute -top-4 -right-4' onClick={()=>handleDelete(image)}>
+            <DeleteIcon />
+          </IconButton>
+            
+            </> 
+            :
               <div
                 onClick={() => setOpenAddImage(true)}
                 className=' w-[150px] h-[150px] cursor-pointer border-dashed  rounded-md border-2 flex justify-center items-center'>
@@ -331,9 +356,7 @@ function ProductEditImages({ product }: { product: Product }) {
           </div>
           <p>{image.position}</p>
 
-          <IconButton className='  absolute top-0 right-4'>
-            <DeleteIcon />
-          </IconButton>
+     
         </div>
       ))}
     </div>
