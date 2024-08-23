@@ -37,7 +37,7 @@ export default function Orders() {
     },
     {
       field: 'status', headerName: 'Trạng thái', width: 200, renderCell: (params) => {
-        return <p>{params.value}</p>
+        return <p>{OrderStatus[params.value]}</p>
       }
     },
     {
