@@ -1,57 +1,72 @@
 import React, { useState, ChangeEvent, MouseEvent } from 'react';
-import axios from 'axios';
+import FileService from '@/services/FileService';
+import { FileDetail } from '@/types/File.type';
+import { toast } from 'react-toastify';
 
-const FileUpload: React.FC = () => {
-  const [file, setFile] = useState<File | null>(null);
+const FileUpload = ({ onSuccess }: { onSuccess?: (file: FileDetail) => void }) => {
+  const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState<string[] | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
+    if (event.target.files && event.target.files.length > 0) {
+      setFiles(Array.from(event.target.files));
     }
   };
 
   const handleFileUpload = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    
-    if (!file) {
-      alert('Please select a file first.');
+  
+    if (files.length === 0) {
+      toast.error('Please select at least one file.');
       return;
     }
-
-    const formData = new FormData();
-    formData.append('file', file);
-
+  
     setUploading(true);
     setUploadSuccess(null);
     setUploadError(null);
-
+  
+    const uploadPromises = files.map(async (file) => {
+      const formData = new FormData();
+      formData.append('file', file);
+  
+      try {
+        const response = await FileService.upload(formData, {
+          isOptimize: true,
+          height: 200,
+          width: 200
+        });
+        return response.url;
+      } catch (error) {
+        throw new Error('Failed to upload file.');
+      }
+    });
+  
     try {
-      const response = await axios.post('http://localhost:4000/v1/static/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      setUploadSuccess(response.data.url);
+      const responses = await Promise.all(uploadPromises);
+      setUploadSuccess(responses);
+      // onSuccess?.(responses);
     } catch (error) {
-      setUploadError('Failed to upload file.');
+      setUploadError('Failed to upload one or more files.');
     } finally {
       setUploading(false);
     }
   };
 
+
+  if (uploadSuccess) {
+
+    return <img src={uploadSuccess[0]} className=' w-20 h-20' />
+  }
+
   return (
     <div>
-      <h1>Upload Image</h1>
-      <input type="file" onChange={handleFileChange}      accept="image/*" />
+      <input type="file" onChange={handleFileChange} accept="image/*" multiple />
       <button onClick={handleFileUpload} disabled={uploading}>
         {uploading ? 'Uploading...' : 'Upload'}
       </button>
-      {uploadSuccess && <p>File uploaded successfully! URL: <a href={uploadSuccess} target="_blank" rel="noopener noreferrer">{uploadSuccess}</a></p>}
       {uploadError && <p style={{ color: 'red' }}>{uploadError}</p>}
     </div>
   );

@@ -4,7 +4,6 @@ import { ProductCreateInput, ProductStatus, ProductVariantCreateInput } from '@/
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Chip, Grid, Input, OutlinedInput, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
-import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
 import SelectCategory from './components/SelectCategory';
 import { createSlug, fillArray, generateVariants } from '@/utils/addProduct';
@@ -15,7 +14,9 @@ import SelectBrand from './components/SelectBrand';
 import SelectCategorySub from './components/SelectCategorySub';
 import { AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
 import AttributeServicesAPI from '@/services/AttributeServicesAPI';
-
+import SaveIcon from '@mui/icons-material/Save';
+import { FormInputText } from '@/components/FormInputText';
+import FileUpload from '@/components/UploadImage';
 
 
 
@@ -165,21 +166,24 @@ export default function ProductAdd() {
 
   return (
     <div className=' py-2 '>
-      <div className=' flex justify-between mb-2'>
-        <Typography variant="h1">Thêm sản phẩm mới</Typography>
 
-      </div>
-      <Grid container gap={3} wrap="nowrap" className=' relative'>
-        <Grid sm={9}>
-          <div className=' flex flex-col gap-2'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className=' flex justify-between mb-2'>
+          <Typography variant="h3">Thêm sản phẩm mới</Typography>
+          <div className=' flex gap-4 mb-4'>
+            <Button startIcon={<SaveIcon />} color="secondary" variant="outlined" >Lưu nháp</Button>
+            <Button startIcon={<SaveIcon />} variant="contained" color="secondary" type="submit">Lưu</Button>
+          </div>
+        </div>
+        <Grid container gap={3} wrap="nowrap" className=' relative'>
 
-            <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
-              <form
-                className="w-full  h-full flex flex-col gap-[25px] "
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <div className=' flex gap-2'>
-                  <InputController
+          <Grid sm={9}>
+            <div className=' flex flex-col gap-8'>
+              <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
+                <div className=' flex flex-col gap-8'>
+                  <FormInputText
                     rules={{
                       required: "Nhập tên sản phẩm"
                     }}
@@ -187,157 +191,170 @@ export default function ProductAdd() {
                     control={control}
                     name="title"
                     type="text"
-                    labelClassName="text-[#272727]"
+                    fullWidth
                   />
 
+
+                  <div >
+                    <Typography variant="h4" className=' mb-4'>Mô tả sản phẩm</Typography>
+                    <Editor
+                      onChange={(value) => { setValue("description_html", value) }}
+                      value={watch("description_html") || ""}
+                    />
+                  </div>
+                  <div>
+                    {/* <InputController
+                      label="Mô tả ngắn"
+                      control={control}
+                      name="short_description"
+                      type="text"
+                      labelClassName="text-[#272727]"
+                    /> */}
+
+                  </div>
 
                 </div>
 
-                <div className=' grid  grid-cols-3 gap-4'>
+
+
+              </MainCard>
+              <MainCard title="Hình ảnh sản phẩm">
+                {/* <div className=' flex flex-col gap-4'>
+                  {images.map((image, index) => (
+                    <div className=' flex flex-col gap-2  justify-center items-center'>
+                      {image ? <img src={image} className=' w-[150px] h-[150px]' /> : null}
+
+                      <OutlinedInput
+                        key={index}
+                        fullWidth
+                        type="text"
+                        value={image}
+                        onChange={(e) => handleInputChange(index, e.target.value)}
+                        placeholder={`Link hỉnh ảnh ${index + 1}`}
+                      />
+
+                    </div>
+
+                  ))}
+                </div> */}
+                <FileUpload />
+              </MainCard>
+
+              <MainCard title="Phần dành cho SEO">
+                <div className=' grid grid-cols-2 gap-2'>
+                  <FormInputText
+                    label="Đường dẫn"
+                    control={control}
+                    name="slug"
+                    type="text"
+                    className="my-3"
+                  />
+                  <FormInputText
+
+                    label="Tiêu đề"
+                    control={control}
+                    name="meta_data.meta_title"
+                    type="text"
+                    className="my-3"
+                  />
+
+                  <FormInputText
+                    label="Mô tả"
+                    control={control}
+                    name="meta_data.meta_description"
+                    type="text"
+                    className="my-3"
+                  />
+                  <FormInputText
+
+                    label="Từ khóa"
+                    control={control}
+                    name="meta_data.meta_keywords"
+                    type="text"
+                    className="my-3"
+                  />
+                </div>
+              </MainCard>
+              <MainCard title="Biến thể">
+                {isSuccess && suc ? <OptionsForm attributes={attributes} attributesValue={attributesValue} onSubmit={(op) => {
+                  setOptions(op)
+                }} /> : null}
+              </MainCard>
+              <MainCard title="Danh sách biến thể">
+                <ul className=' mt-3 flex flex-col gap-2'>
+                  {variants.map(variant => (
+                    <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
+                      <Chip color="primary" label={variant.title} />
+                      <div className=' flex items-center  gap-2'>
+                        <span>Giá</span>
+                        <Input
+                          type="number"
+                          value={variant.price}
+                          onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
+                          placeholder="Price"
+
+                        />
+                      </div>
+                      <div className=' flex items-center  gap-2'>
+                        <span>Giá so sánh</span>
+
+                        <Input
+                          type="number"
+                          value={variant.compare_at_price}
+                          onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
+                          placeholder="Compare at Price"
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </MainCard>
+              <MainCard title="Thông số kỷ thuật">
+                <SelectSpecifications value={watch("specifications.connect").map(spe => spe.id)} onChange={(ids) => {
+                  setValue("specifications.connect", ids.map(id => ({ id })))
+                }} />
+              </MainCard>
+            </div>
+
+          </Grid>
+
+
+          <Grid sm={3}>
+
+            <div className=' flex flex-col gap-4'>
+
+              <MainCard title="Danh mục & Thương hiệu">
+
+                <div className=' grid  grid-cols-1 gap-4'>
                   <SelectCategory
                     label='Danh mục'
-
                     control={control}
                     name="category.connect.id"
-
                   />
 
-                  <SelectBrand
-                    label='Thương hiệu'
 
-                    control={control}
-                    name="brand.connect.id"
-                  />
                   <SelectCategorySub
                     label='Danh mục phụ'
 
                     name="sub_categories.create"
                     control={control}
                   />
-                </div>
+                  <SelectBrand
+                    label='Thương hiệu'
 
-
-                <div>
-                  <Editor
-                    onChange={(value) => { setValue("description_html", value) }}
-                    value={watch("description_html") || ""}
-                  />
-                </div>
-                <div>
-                  <InputController
-
-                    label="Mô tả ngắn"
                     control={control}
-                    name="short_description"
-                    type="text"
-                    labelClassName="text-[#272727]"
+                    name="brand.connect.id"
                   />
-
                 </div>
-                <div className=' flex gap-2'>
-                  <InputController
+              </MainCard>
+              <MainCard title="Nhãn dán">
 
-                    label="Tiêu đề meta"
-                    control={control}
-                    name="meta_data.meta_title"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-                  <InputController
-
-                    label="Mô tả meta"
-                    control={control}
-                    name="meta_data.meta_description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
-
-                </div>
-                <Button className=' fixed bottom-10  right-20 ' variant="contained" type="submit">Lưu</Button>
-              </form>
-            </MainCard>
-            <MainCard title="Hình ảnh sản phẩm">
-              <div className=' flex flex-col gap-4'>
-                {images.map((image, index) => (
-                  <div className=' flex flex-col gap-2  justify-center items-center'>
-                    {image ? <img src={image} className=' w-[150px] h-[150px]' /> : null}
-
-                    <OutlinedInput
-                      key={index}
-                      fullWidth
-                      type="text"
-                      value={image}
-                      onChange={(e) => handleInputChange(index, e.target.value)}
-                      placeholder={`Link hỉnh ảnh ${index + 1}`}
-                    />
-
-                  </div>
-
-                ))}
-              </div>
-            </MainCard>
-            <MainCard title="Biến thể">
-              {isSuccess && suc ? <OptionsForm attributes={attributes} attributesValue={attributesValue} onSubmit={(op) => {
-                setOptions(op)
-              }} /> : null}
-
-            </MainCard>
-            <MainCard title="Danh sách biến thể">
-              <ul className=' mt-3 flex flex-col gap-2'>
-                {variants.map(variant => (
-                  <li key={variant.sku} className='  grid grid-cols-3 gap-4'>
-                    <Chip color="primary" label={variant.title} />
-                    <div className=' flex items-center  gap-2'>
-                      <span>Giá</span>
-                      <Input
-                        type="number"
-                        value={variant.price}
-                        onChange={(e) => handlePriceChange(variant.sku, parseFloat(e.target.value))}
-                        placeholder="Price"
-
-                      />
-                    </div>
-                    <div className=' flex items-center  gap-2'>
-                      <span>Giá so sánh</span>
-
-                      <Input
-                        type="number"
-                        value={variant.compare_at_price}
-                        onChange={(e) => handleComparePriceChange(variant.sku, parseFloat(e.target.value))}
-                        placeholder="Compare at Price"
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </MainCard>
-            <MainCard title="Thông số kỷ thuật">
-              <SelectSpecifications value={watch("specifications.connect").map(spe => spe.id)} onChange={(ids) => {
-                setValue("specifications.connect", ids.map(id => ({ id })))
-              }} />
-            </MainCard>
-          </div>
+              </MainCard>
+            </div>
+          </Grid>
 
         </Grid>
-
-
-        <Grid sm={3}>
-          <div className=' flex flex-col gap-4'>
-
-            <MainCard title="Hiển thị">
-
-            </MainCard>
-            <MainCard title="Nhóm sản phẩm">
-
-            </MainCard>
-            <MainCard title="Nhãn dán">
-
-            </MainCard></div>
-        </Grid>
-
-      </Grid>
+      </form>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import { forwardRef, useEffect } from "react";
-import {  NavLink } from "react-router-dom";
+import {  NavLink, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // material-ui
@@ -29,7 +29,7 @@ const NavItem = ({ item, level }: { item:  MenuItemChildren; level: number }) =>
   const customization = useSelector((state: RootState) => state.custom);
 
   const matchesSM = useMediaQuery(theme.breakpoints.down("lg"));
-
+  const location = useLocation();
 
   const itemIcon = item?.icon ? (
     <>
@@ -93,13 +93,12 @@ const NavItem = ({ item, level }: { item:  MenuItemChildren; level: number }) =>
         borderRadius: `${customization.borderRadius}px`,
         mb: 0.5,
         alignItems: "flex-start",
-        backgroundColor: level > 1 ? "transparent !important" : "inherit",
         py: level > 1 ? 1 : 1.25,
         pl: `${level * 24}px`,
       }}
 
-      selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
-
+      // selected={customization.isOpen.findIndex((id) => id === item.id) > -1}
+      selected={location.pathname === item.url}
       onClick={() => itemHandler(item.id)}
     >
       <ListItemIcon sx={{ my: "auto", minWidth: !item?.icon ? 18 : 36 }}>

@@ -11,12 +11,10 @@ import NavItem from '../NavItem';
 
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-// import { IconChevronDown, IconChevronUp  , C} from '@mui/icons-material';
 import type { RootState } from "../../../../../redux/store";
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
-// import type {  MenuItemChildren } from '../../../../../menu-items'
 
 import { MenuItemChildren } from '@/types/menuitem';
 
@@ -74,7 +72,7 @@ const NavCollapse = ({ menu, level }: { menu :MenuItemChildren ; level : number 
                     py: level > 1 ? 1 : 1.25,
                     pl: `${level * 24}px`
                 }}
-                selected={selected === menu.id}
+                // selected={location === menu.id}
                 onClick={handleClick}
             >
                 <ListItemIcon sx={{ my: 'auto', minWidth: !menu.icon ? 18 : 36 }}>{menuIcon}</ListItemIcon>

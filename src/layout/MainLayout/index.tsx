@@ -1,18 +1,14 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
-
-// material-ui
 import { styled, useTheme } from '@mui/material/styles';
 import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from '@mui/material';
 
-// project imports
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-// import Customization from '../Customization';
-// import navigation from '../../menu-items';
+
 import { drawerWidth } from '../../constans/constant';
-// assets
+
 
 
 
@@ -86,7 +82,6 @@ const MainLayout = () => {
         <NavigationScroll>
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            {/* header */}
             <AppBar
                 enableColorOnDark
                 position="fixed"
@@ -101,14 +96,8 @@ const MainLayout = () => {
                     <Header drawerOpen={leftDrawerOpened} handleLeftDrawerToggle={handleLeftDrawerToggle} />
                 </Toolbar>
             </AppBar>
-
-            {/* drawer */}
             <Sidebar drawerOpen={leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
-
-            {/* main content */}
             <Main theme={theme} open={leftDrawerOpened}>
-                {/* breadcrumb */}
-                {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign /> */}
                 <Outlet />
             </Main>
         

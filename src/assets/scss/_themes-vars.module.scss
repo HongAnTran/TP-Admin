@@ -1,7 +1,7 @@
 // paper & background
 $paper: #ffffff;
 
-// primary
+// // primary
 $primaryLight: #e3f2fd;
 $primaryMain: #2196f3;
 $primaryDark: #1e88e5;
@@ -14,6 +14,7 @@ $secondaryMain: #673ab7;
 $secondaryDark: #5e35b1;
 $secondary200: #b39ddb;
 $secondary800: #4527a0;
+// Primary
 
 // success Colors
 $successLight: #b9f6ca;
@@ -94,6 +95,11 @@ $darkTextSecondary: #8492c4;
     secondaryMain: $secondaryMain;
     secondaryDark: $secondaryDark;
     secondary800: $secondary800;
+
+
+
+    
+
 
     // success
     successLight: $successLight;

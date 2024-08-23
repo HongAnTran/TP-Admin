@@ -29,6 +29,14 @@ const product: MenuItemChildren = {
                         icon: <Inventory2Icon />,
                         breadcrumbs: true,
                 },
+                {
+                        id: 'productAdd',
+                        title: 'Thêm sản phẩm',
+                        type: "item",
+                        url: '/product/add',
+                        icon: <Inventory2Icon />,
+                        breadcrumbs: true,
+                },
             
         ]
 

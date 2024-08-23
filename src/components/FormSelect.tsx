@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 
-type FormInputSelectProps<T extends FieldValues> = {
+export type FormInputSelectProps<T extends FieldValues> = {
   name: Path<T>;
   control: Control<T>;
   options: { value: string | number; label: string }[];

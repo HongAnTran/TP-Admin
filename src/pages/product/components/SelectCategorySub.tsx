@@ -1,11 +1,13 @@
-import  { SelectControllerProps} from '@/components/SelectControl';
-import SelectMultipleControl from '@/components/SelectMultipleControl';
+
+
+import FormSelect, { FormInputSelectProps } from '@/components/FormSelect';
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI'
-import { FieldPath, FieldValues } from 'react-hook-form';
+import { FieldValues } from 'react-hook-form';
+
+
 export default function SelectCategorySub<
   TFieldValues extends FieldValues,
-  TName extends FieldPath<TFieldValues>
->(props: Omit<SelectControllerProps<TFieldValues, TName> , "options">) {
+>(props: Omit<FormInputSelectProps<TFieldValues>, "options">) {
   const { data: cates, isSuccess } = CateProductsServicesAPI.useList()
   if (!isSuccess) {
     return null
@@ -13,7 +15,7 @@ export default function SelectCategorySub<
 
   const options = cates.datas.map(cate => ({ label: cate.title, value: cate.id }))
   return (
-    <SelectMultipleControl   {...props}  options={options} />
+    <FormSelect multiple  {...props} options={options} />
 
   )
 }
