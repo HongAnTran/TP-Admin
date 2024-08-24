@@ -9,6 +9,7 @@ import SelectCategory from '../blog/components/add/SelectCategory';
 import { toast } from 'react-toastify';
 import BlogServicesAPI from '@/services/BlogServicesAPI';
 import { ArticleCreateInput, ArticleStatus } from '@/types/article';
+import { FormInputText } from '@/components/FormInputText';
 
 
 
@@ -34,8 +35,8 @@ export default function CategoryAdd() {
         slug: "",
         description: "",
         status: ArticleStatus.SHOW,
-        meta_data : null
-        
+        meta_data: null
+
       })
     } catch (error) {
       toast.error(JSON.stringify(error))
@@ -49,7 +50,7 @@ export default function CategoryAdd() {
 
       </div>
       <Grid container gap={3} wrap="nowrap">
-        <Grid sm={9}>
+        <Grid sm={12}>
           <div className=' flex flex-col gap-2'>
 
             <MainCard title="Thông tin cơ bản" contentSX={{ height: "auto" }}>
@@ -58,38 +59,39 @@ export default function CategoryAdd() {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className=' flex gap-2'>
-                  <InputController
-
+                  <FormInputText
+                    fullWidth
                     label="Tên Bài viết"
                     control={control}
                     name="title"
                     type="text"
                     className="my-3"
-                    labelClassName="text-[#272727]"
                   />
 
                 </div>
                 <div className=' flex gap-2'>
-                  <InputController
+                  <FormInputText
+                    fullWidth
 
                     label="Ảnh đại diện"
                     control={control}
                     name="thumnal_url"
                     type="text"
                     className="my-3"
-                    labelClassName="text-[#272727]"
                   />
-                  <InputController
-
-                    label="Mô tả ngắn"
-                    control={control}
-                    name="description"
-                    type="text"
-                    className="my-3"
-                    labelClassName="text-[#272727]"
-                  />
+                  <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
+                    setValue("category.connect.id", id)
+                  }} />
                 </div>
 
+
+                <FormInputText
+                  label="Mô tả ngắn"
+                  control={control}
+                  name="description"
+                  type="text"
+                  className="my-3"
+                />
 
                 <div>
                   <Editor
@@ -98,23 +100,22 @@ export default function CategoryAdd() {
                   />
                 </div>
                 <div className=' flex gap-2'>
-                  <InputController
-
+                  <FormInputText
+                    fullWidth
                     label="meta_title"
                     control={control}
                     name="meta_data.meta_title"
                     type="text"
                     className="my-3"
-                    labelClassName="text-[#272727]"
                   />
-                  <InputController
+                  <FormInputText
+                    fullWidth
 
                     label="meta_description"
                     control={control}
                     name="meta_data.meta_description"
                     type="text"
                     className="my-3"
-                    labelClassName="text-[#272727]"
                   />
 
                 </div>
@@ -127,13 +128,7 @@ export default function CategoryAdd() {
           </div>
 
         </Grid>
-        <Grid sm={3}>
-          <MainCard title="Chọn">
-            <SelectCategory value={watch("category.connect.id")?.toString() || ""} onChange={(id) => {
-              setValue("category.connect.id", id)
-            }} />
-          </MainCard>
-        </Grid>
+
 
       </Grid>
     </div>

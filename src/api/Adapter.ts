@@ -17,9 +17,8 @@ class UploadAdapter {
     return this.loader.file
       .then((file: File) => new Promise((resolve, reject) => {
         const formData = new FormData();
-        formData.append('upload', file);
+        formData.append('file', file);
         FileService.upload(formData).then((result : any) => {
-          console.log(result)
             if (result && result.url) {
               resolve({
                 default: result.url

@@ -3,12 +3,12 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
   ClassicEditor, Bold, Essentials, Italic, Mention,
   Paragraph, Undo, Alignment, Font, Table, Heading, Image, Clipboard,
+  LinkImage,
   ImageCaption,
   ImageResize,
   ImageStyle,
   ImageToolbar,
-  LinkImage,
-  ImageCustomResizeUI
+  ImageInsert
 } from 'ckeditor5';
 
 // import { UploadAdapterPlugin } from '../api/Adapter';
@@ -21,32 +21,27 @@ import { UploadAdapterPlugin } from '@/api/Adapter';
 
 function Editor({ value, onChange }: { value: string, onChange: (data: string) => void }) {
   const editorConfiguration: EditorConfig = {
-    plugins: [Bold, Essentials, Italic, Mention, Paragraph, Undo, Alignment, Font, Table, Heading, Image, Clipboard, ImageToolbar, ImageCaption, ImageStyle, ImageResize, LinkImage, ImageCustomResizeUI],
-    // extraPlugins: [UploadAdapterPlugin],
+    plugins: [Bold, Essentials, Italic, Mention, Paragraph,
+      Undo, Alignment, Font, Table, Heading,
+      Image, Clipboard, LinkImage,
+      ImageInsert,
+      ImageCaption, ImageResize, ImageCaption, ImageStyle, ImageToolbar,],
+    extraPlugins: [UploadAdapterPlugin],
     toolbar: {
       items: [
         'heading', '|',
-        'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+        'bold', 'italic', 'link', '|',
         'alignment', '|',
         'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
-        'insertImage', 'mediaEmbed', 'insertTable', 'tableColumn', 'tableRow', 'mergeTableCells', '|',
+        'insertImage', 'insertTable', '|',
         'undo', 'redo'
       ]
     },
-    image: {
-      toolbar: [
-        'imageStyle:block',
-        'imageStyle:side',
-        '|',
-        'toggleImageCaption',
-        'imageTextAlternative',
-        '|',
-        'linkImage'
-      ],
-      insert: {
-        type: 'auto'
-      }
-    },
+    // image: {
+    //   insert: {
+    //     integrations: ['upload', 'assetManager', 'url']
+    //   }
+    // }
   };
 
   const handleEditorChange = (_event: any, editor: any) => {
