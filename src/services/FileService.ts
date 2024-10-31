@@ -5,7 +5,7 @@ import { OptionsUseQuery, ResponseList } from "@/types/common";
 import { Params } from "react-router-dom";
 
 
-const URL: string = "static/upload/images";
+const URL: string = "static/upload/clound";
 const QUERY_KEY = URL;
 const serviceAPI = new ServiceAPI(URL);
 type DataQuery = FileDetail

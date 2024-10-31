@@ -2,14 +2,15 @@ import { useFieldArray, useForm, FormProvider } from 'react-hook-form';
 import ValuesArray from './ValuesArray';
 import { Button, MenuItem, Select } from '@mui/material';
 // import { optionsValue } from '@/constans/options';
-import {  Attribute, AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
+import { Attribute, AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
-export default function OptionsForm({ onSubmit, defaultValue , attributes , attributesValue }: { defaultValue?: ProductAttributeCreateInput[], 
-  onSubmit: (options: ProductAttributeCreateInput[]) => void ,
-  attributes : Attribute[],
-  attributesValue : AttributeValue[]
+export default function OptionsForm({ onSubmit, defaultValue, attributes, attributesValue }: {
+  defaultValue?: ProductAttributeCreateInput[],
+  onSubmit: (options: ProductAttributeCreateInput[]) => void,
+  attributes: Attribute[],
+  attributesValue: AttributeValue[]
 
 }) {
 
@@ -29,7 +30,7 @@ export default function OptionsForm({ onSubmit, defaultValue , attributes , attr
   });
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(data => onSubmit(data.options))}>
+      <form >
         <ul className=' flex flex-col gap-2 mb-2'>
           {fields.map((item, index) => {
             // let options = [...optionsValue]
@@ -63,7 +64,7 @@ export default function OptionsForm({ onSubmit, defaultValue , attributes , attr
         >
           Thêm Thuộc tính
         </Button>
-        <Button variant="contained" type="submit" startIcon={<SaveIcon />}>Xong</Button>
+        <Button variant="contained" onClick={handleSubmit(data => onSubmit(data.options))} startIcon={<SaveIcon />}>Xong</Button>
 
       </form>
     </FormProvider>

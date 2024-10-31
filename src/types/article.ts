@@ -47,6 +47,7 @@ type ArticleCreateInput = {
   };
 }
 
+type ArticleUpdateInput = Partial<ArticleCreateInput>
 
-export type { Article, ArticleCreateInput }
+export type { Article, ArticleCreateInput , ArticleUpdateInput }
 export { ArticleStatus }

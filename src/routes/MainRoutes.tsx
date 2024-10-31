@@ -20,6 +20,7 @@ const CategoryBlogAdd = Loadable(lazy(() => import('@/pages/category-blog/Catego
 
 const Blog = Loadable(lazy(() => import('@/pages/blog/Blog')));
 const BlogAdd = Loadable(lazy(() => import('@/pages/blog/BlogAdd')));
+const BlogEdit = Loadable(lazy(() => import('@/pages/blog/BlogEdit')));
 
 
 const Orders = Loadable(lazy(() => import('@/pages/order/Orders')));
@@ -88,6 +89,11 @@ const MainRoutes: RouteObject = {
         {
             path: '/blog/add',
             element: <BlogAdd />
+        },
+        
+        {
+            path: '/blog/:id',
+            element: <BlogEdit />
         },
 
 

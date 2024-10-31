@@ -56,7 +56,7 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
     mode: "onSubmit",
     defaultValues: {
       title,
-      brand: { connect: { id: brand_id } },
+      brand:{ connect: { id: brand_id } },
       category: { connect: { id: category_id } },
       description_html,
       meta_data: meta_data ? meta_data : undefined,
@@ -73,8 +73,9 @@ function ProductEditForm({ product, refetch }: { product: Product, refetch: () =
         id: product.id,
         data: {
           ...data,
+          brand : undefined
           // sub_categories: { set: subIds.map((id: number) => ({ category_id: id })) || [] },
-          slug: createSlug(data.title || ""),
+          // slug: createSlug(data.title || ""),
         }
       })
       toast.success("Cập nhập thành công")

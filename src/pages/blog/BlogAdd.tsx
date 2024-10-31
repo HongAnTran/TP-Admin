@@ -2,7 +2,6 @@
 import MainCard from '@/ui-component/cards/MainCard'
 import { Button, Grid, Typography } from '@mui/material'
 import { useForm } from 'react-hook-form';
-import InputController from '@/components/InputControl';
 import Editor from '@/components/editor/Editor';
 import { createSlug } from '@/utils/addProduct';
 import SelectCategory from '../blog/components/add/SelectCategory';
@@ -13,7 +12,7 @@ import { FormInputText } from '@/components/FormInputText';
 
 
 
-export default function CategoryAdd() {
+export default function BlogAdd() {
   const { mutateAsync } = BlogServicesAPI.useAdd()
 
 
@@ -117,7 +116,15 @@ export default function CategoryAdd() {
                     type="text"
                     className="my-3"
                   />
+                  <FormInputText
+                    fullWidth
 
+                    label="meta_keywords"
+                    control={control}
+                    name="meta_data.meta_keywords"
+                    type="text"
+                    className="my-3"
+                  />
                 </div>
 
                 <Button className=' fixed bottom-10  right-10 ' variant="contained" type="submit">Lưu</Button>

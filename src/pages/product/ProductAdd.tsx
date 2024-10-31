@@ -97,6 +97,7 @@ export default function ProductAdd() {
         price_max,
         price_min,
         status: 1,
+        brand : data.brand?.connect.id ? {connect :  data.brand?.connect} :undefined ,
         images: {
           createMany: {
             data: images.filter(img => img).map((img, index) => {
@@ -219,7 +220,7 @@ export default function ProductAdd() {
 
               </MainCard>
               <MainCard title="Hình ảnh sản phẩm">
-                {/* <div className=' flex flex-col gap-4'>
+                <div className=' flex flex-col gap-4'>
                   {images.map((image, index) => (
                     <div className=' flex flex-col gap-2  justify-center items-center'>
                       {image ? <img src={image} className=' w-[150px] h-[150px]' /> : null}
@@ -236,8 +237,8 @@ export default function ProductAdd() {
                     </div>
 
                   ))}
-                </div> */}
-                <FileUpload />
+                </div>
+                {/* <FileUpload /> */}
               </MainCard>
 
               <MainCard title="Phần dành cho SEO">

@@ -12,7 +12,7 @@ export default function Blog() {
   const columns: GridColDef[] = [
     {
       field: "title", headerName: 'Tiêu đề', width: 500, renderCell: (params) => {
-        return <Link to={params.row.slug}><Typography variant="body2" >{params.value}</Typography></Link>
+        return <Link to={params.row.id}><Typography variant="body2" >{params.value}</Typography></Link>
       }
     },
     { field: 'category', headerName: 'Nhóm bài viết', width: 200 },

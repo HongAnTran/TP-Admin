@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
-import { OptionsUseQuery, Params, Error, ResponseList} from "@/types/common";
+import { OptionsUseQuery, Params, Error, ResponseList, DataUpdate} from "@/types/common";
 // import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
 import { Article   , ArticleCreateInput,} from "@/types/article";
 
@@ -20,7 +20,7 @@ export default {
       }
     );
   },
-  useDetail: (id: string, options?: OptionsUseQuery) => {
+  useDetail: (id: number, options?: OptionsUseQuery) => {
     return useQuery<DataQuery, Error>(
       {
         queryKey: [QUERY_KEY, id],
@@ -32,7 +32,7 @@ export default {
   useAdd: () => {
     const queryClient = useQueryClient();
 
-    return useMutation<ArticleCreateInput, Error, Omit<ArticleCreateInput, "id">>(
+    return useMutation<DataQuery, Error, Omit<ArticleCreateInput, "id">>(
       {
         mutationFn: (data) => serviceAPI.add(data),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
@@ -40,20 +40,20 @@ export default {
       }
     );
   },
-  // useUpdate: () => {
-  //   const queryClient = useQueryClient();
-  //   return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(
-  //     {
-  //       mutationFn: (data) => {
-  //           const body = data.data
-  //         return serviceAPI.put(data.id, body)
-  //       },
-  //       onSuccess: (data) =>
-  //         queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
-  //     }
+  useUpdate: () => {
+    const queryClient = useQueryClient();
+    return useMutation<DataQuery, Error, DataUpdate<ArticleUpdateInput>>(
+      {
+        mutationFn: (data) => {
+            const body = data.data
+          return serviceAPI.put(data.id, body)
+        },
+        onSuccess: () =>
+          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
+      }
 
-  //   );
-  // },
+    );
+  },
   useDelete: () => {
     const queryClient = useQueryClient();
     return useMutation<number | string, Error, number | string>({

@@ -1,11 +1,4 @@
 import FileService from "@/services/FileService";
-
-// interface UploadResponse {
-//   url: string;
-// }
-
-
-
 class UploadAdapter {
   private loader: any;
 
@@ -14,22 +7,32 @@ class UploadAdapter {
   }
 
   async upload(): Promise<{ default: string }> {
-    return this.loader.file
-      .then((file: File) => new Promise((resolve, reject) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        FileService.upload(formData).then((result : any) => {
-            if (result && result.url) {
-              resolve({
-                default: result.url
-              });
-            } else {
-              reject(result);
-            }
-          })
-          .catch(reject);
-      }));
+    try {
+      const file = await this.loader.file;
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const result = await FileService.upload(formData);
+      this.loader.uploaded = true;
+      return {
+        default: result.url,
+      };
+
+    } catch (error) {
+      console.error('Upload failed:', error);
+      return Promise.reject(error);
+    }
   }
+  // async delete() {
+  //   if (this.url) {
+  //     try {
+  //       await FileService.delete(this.url);
+  //       this.url = null; // Clear the URL after successful deletion
+  //     } catch (error) {
+  //       console.error('Deletion failed:', error);
+  //     }
+  //   }
+  // }
 
   abort() {
     // Implement aborting the upload process if needed.
