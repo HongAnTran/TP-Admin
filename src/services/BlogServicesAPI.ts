@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ServiceAPI from "./index";
 import { OptionsUseQuery, Params, Error, ResponseList, DataUpdate} from "@/types/common";
 // import { Product, ProductCreateInput, Products, ProductUpdateInput } from "@/types/product";
-import { Article   , ArticleCreateInput,} from "@/types/article";
+import { Article   , ArticleCreateInput, ArticleUpdateInput,} from "@/types/article";
 
 const URL: string = "/articles";
 const QUERY_KEY = URL;
