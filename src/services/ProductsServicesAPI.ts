@@ -35,32 +35,43 @@ export default {
     return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
       {
         mutationFn: (data) => serviceAPI.add(data),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+          serviceAPI.revalidate([URL])
+        }
 
       }
     );
   },
   useUpdate: () => {
     const queryClient = useQueryClient();
-    return useMutation<ProductUpdateInput, Error, DataUpdate<ProductUpdateInput>>(
+    return useMutation<Product, Error, DataUpdate<ProductUpdateInput>>(
       {
         mutationFn: (data) => {
             const body = data.data
           return serviceAPI.put(data.id, body)
         },
-        onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
-      }
+        onSuccess: (data) =>{
+          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] })
+          serviceAPI.revalidate([URL,data.slug])
 
+        }
+         ,
+      }
     );
   },
   useDelete: () => {
     const queryClient = useQueryClient();
     return useMutation<number | string, Error, number | string>({
       mutationFn: (id: number | string) => serviceAPI.delete(id),
-      onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+        serviceAPI.revalidate([URL])
+      },
     }
-
     );
+  },
+  revalidate:async (tag : string) => {
+    serviceAPI.revalidate([URL,tag])
   },
 };

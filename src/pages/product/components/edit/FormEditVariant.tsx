@@ -1,4 +1,5 @@
 import InputController from '@/components/InputControl';
+import ProductsServicesAPI from '@/services/ProductsServicesAPI';
 import ProductsVariantServicesAPI from '@/services/ProductsVariantServicesAPI';
 import { Product, ProductImage, ProductUpdateInput, ProductVariant, ProductVariantUpdateInput } from '@/types/product';
 import cn from '@/utils/cn';
@@ -88,6 +89,7 @@ export default function FormEditVariant({ product, productDetail, onUpdatePrice,
           price_min,
           compare_at_price
         })
+        await ProductsServicesAPI.revalidate(productDetail.slug)
       } else {
         refetch()
       }

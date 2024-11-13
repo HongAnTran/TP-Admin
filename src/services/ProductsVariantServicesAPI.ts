@@ -5,6 +5,7 @@ import {  ProductCreateInput,  ProductVariant,  ProductVariantUpdateInput } from
 
 
 const URL: string = "/product-variant";
+const URL_REVALIDATE: string = "/products";
 const QUERY_KEY = URL;
 const serviceAPI = new ServiceAPI(URL);
 type DataQuery = ProductVariant;
@@ -35,7 +36,10 @@ export default {
     return useMutation<ProductCreateInput, Error, Omit<ProductCreateInput, "id">>(
       {
         mutationFn: (data) => serviceAPI.add(data),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: [QUERY_KEY] }),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: [QUERY_KEY] })
+          serviceAPI.revalidate([URL_REVALIDATE])
+        },
 
       }
     );
@@ -49,7 +53,10 @@ export default {
           return serviceAPI.put<ProductVariant>(data.id, body)
         },
         onSuccess: () =>
-          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] }),
+         {
+          queryClient.invalidateQueries({ queryKey: [...QUERY_KEY] })
+          serviceAPI.revalidate([URL_REVALIDATE])
+         },
       }
 
     );

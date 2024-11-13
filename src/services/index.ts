@@ -59,6 +59,15 @@ class ServiceAPI {
       return Promise.reject(error);
     }
   }
+  async revalidate(tags: string[]) {
+    try {
+      return (await client.post(`/revalidate`,tags , {
+        baseURL: import.meta.env.VITE_BASE_URL_SITE,
+      })).data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }
 
 export default ServiceAPI;
