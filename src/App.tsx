@@ -11,7 +11,7 @@ import { ToastContainer } from "react-toastify";
 import router from './routes/index.ts';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-// ==============================|| APP ||============================== //
+// ==============================|| APP ||============================ //
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
