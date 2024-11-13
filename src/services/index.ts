@@ -61,7 +61,7 @@ class ServiceAPI {
   }
   async revalidate(tags: string[]) {
     try {
-      return (await client.post(`/revalidate`,tags , {
+      return (await client.post(`/revalidate`,{tags} , {
         baseURL: import.meta.env.VITE_BASE_URL_SITE,
       })).data;
     } catch (error) {
