@@ -15,7 +15,7 @@ class UploadAdapter {
       const result = await FileService.upload(formData);
       this.loader.uploaded = true;
       return {
-        default: result.url,
+        default: result.data.url,
       };
     } catch (error) {
       console.error("Upload failed:", error);
