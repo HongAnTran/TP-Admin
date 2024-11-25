@@ -8,7 +8,7 @@ import { createSlug } from '@/utils/addProduct';
 import { CategoryCreateInput } from '@/types/categoryProduct';
 import CateProductsServicesAPI from '@/services/CateProductsServicesAPI';
 import { toast } from 'react-toastify';
-import FileUpload from '@/components/UploadImage';
+import FileUpload from '@/components/SingleImageUpload';
 
 
 

@@ -6,7 +6,7 @@
 .ck.ck-content:not(.ck-style-grid__button__preview):not(.ck-editor__nested-editable) {
   /* Make sure all content containers have some min height to make them easier to locate. */
   min-height: 360px;
-  max-height: 360px;
+  max-height: auto;
   overflow: auto;
   padding: 8px;
   background-color: transparent;

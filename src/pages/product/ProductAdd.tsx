@@ -16,7 +16,7 @@ import { AttributeValue, ProductAttributeCreateInput } from '@/types/attribute';
 import AttributeServicesAPI from '@/services/AttributeServicesAPI';
 import SaveIcon from '@mui/icons-material/Save';
 import { FormInputText } from '@/components/FormInputText';
-import FileUpload from '@/components/UploadImage';
+import FileUpload from '@/components/SingleImageUpload';
 
 
 
@@ -97,7 +97,7 @@ export default function ProductAdd() {
         price_max,
         price_min,
         status: 1,
-        brand : data.brand?.connect.id ? {connect :  data.brand?.connect} :undefined ,
+        brand: data.brand?.connect.id ? { connect: data.brand?.connect } : undefined,
         images: {
           createMany: {
             data: images.filter(img => img).map((img, index) => {
