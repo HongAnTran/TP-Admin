@@ -1,4 +1,4 @@
-import FileService from "@/services/FileService";
+import FileService from "@/services/File.service";
 class UploadAdapter {
   private loader: any;
 
@@ -10,16 +10,15 @@ class UploadAdapter {
     try {
       const file = await this.loader.file;
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
       const result = await FileService.upload(formData);
       this.loader.uploaded = true;
       return {
-        default: result.url,
+        default: result.data.url,
       };
-
     } catch (error) {
-      console.error('Upload failed:', error);
+      console.error("Upload failed:", error);
       return Promise.reject(error);
     }
   }
@@ -40,7 +39,7 @@ class UploadAdapter {
 }
 
 export function UploadAdapterPlugin(editor: any) {
-  editor.plugins.get('FileRepository').createUploadAdapter = (loader: any) => {
+  editor.plugins.get("FileRepository").createUploadAdapter = (loader: any) => {
     return new UploadAdapter(loader);
   };
 }
