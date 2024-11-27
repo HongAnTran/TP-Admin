@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import BlogServicesAPI from '@/services/BlogServicesAPI';
 import { ArticleCreateInput, ArticleStatus } from '@/types/article';
 import { FormInputText } from '@/components/FormInputText';
-import SingleImageUpload from '@/components/SingleImageUpload';
 import FileManager from '@/components/static/FilesManager';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -73,6 +72,7 @@ export default function BlogAdd() {
                 </div>
                 <div className=' grid grid-cols-2 gap-2'>
                   <div>
+                    <p>Ảnh đại diện</p>
                     {thumUrl ? <div className=' relative'>
 
                       <IconButton onClick={() => { setValue("thumnal_url", "") }}>

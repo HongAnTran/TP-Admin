@@ -63,7 +63,7 @@ const SingleImageUpload: React.FC<UploadImageProps> = ({ onSuccess, onDelete }) 
       />
       <label htmlFor="image-upload-input">
         <Button variant="contained" component="span">
-          Choose Image
+          Tải lên
         </Button>
       </label>
 
