@@ -13,7 +13,7 @@ class FileServiceClass extends BaseService<FileDetail, FileDetail, FileDetail> {
     options?: { isOptimize: boolean; width: number; height: number }
   ) {
     return this.clientApi.post<FileDetail>(
-      "/static/files/clound",
+      "/static/upload/clound",
       filFileDetaile,
       {
         headers: {
