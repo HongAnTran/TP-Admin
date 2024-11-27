@@ -1,6 +1,5 @@
 import { FileDetail } from "@/types/File.type";
 import { BaseService } from "./Base.service";
-import { AxiosRequestConfig } from "axios";
 import { OptionsUseQuery } from "@/types/common";
 import { useQuery } from "@tanstack/react-query";
 import { ErrorRespon } from "@/types/Common.type";
@@ -13,12 +12,16 @@ class FileServiceClass extends BaseService<FileDetail, FileDetail, FileDetail> {
     filFileDetaile: FormData,
     options?: { isOptimize: boolean; width: number; height: number }
   ) {
-    return this.clientApi.post<FileDetail>("/clound", filFileDetaile, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      params: options,
-    });
+    return this.clientApi.post<FileDetail>(
+      "/static/files/clound",
+      filFileDetaile,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        params: options,
+      }
+    );
   }
 
   useListArr(params?: any, options?: OptionsUseQuery) {
