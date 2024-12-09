@@ -38,7 +38,7 @@ export default function Blog() {
     {
       field: 'category', headerName: 'Nhóm bài viết', width: 200,
       renderCell: (params) => {
-        return <Typography variant="body2" >{params.value.title}</Typography>
+        return <Typography variant="body2" >{params?.value?.title}</Typography>
       }
     },
 
